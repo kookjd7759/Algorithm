@@ -46,7 +46,6 @@ int main() {
 	int count = 0;
 	for (auto mes_iter : mes_vec) {
 		int Y = true;
-		//cout << mes_iter << "\n";
 		for (auto num_iter : vec) {
 			if (num_iter % mes_iter != 0) {
 				Y = false;
