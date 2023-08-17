@@ -24,11 +24,9 @@ void makeSmall(int* a, int* b) {
 
 	int size = deq.size();
 	for (int i = 0; i < size; i++) {
-		// cout << "Case : " << deq.front() << "\n";
 		if (*a % deq.front() == 0 and *b % deq.front() == 0) {
 			*a = *a / deq.front();
 			*b = *b / deq.front();
-			// cout << "Yes!\n";
 			break;
 		}
 		deq.pop_front();
@@ -38,11 +36,9 @@ void makeSmall(int* a, int* b) {
 int main() {
 	int a1, b1; cin >> a1 >> b1;
 	makeSmall(&a1, &b1);
-	// cout << "MakeSamll : " << a1 << " " << b1 << "\n";
 
 	int a2, b2; cin >> a2 >> b2;
 	makeSmall(&a2, &b2);
-	// cout << "MakeSamll : " << a2 << " " << b2 << "\n";
 
 	int a = a1 * b2 + a2 * b1;
 	int b = b1 * b2;
