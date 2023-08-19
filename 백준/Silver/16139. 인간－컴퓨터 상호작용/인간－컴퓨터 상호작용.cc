@@ -23,15 +23,6 @@ int main() {
 
 	string st; cin >> st;
 	SetArr(st);
-	/*
-	for (int i = 0; i < 26; i++) {
-		cout << (char)(97 + i) << " : ";
-		for (int j = 0; j < st.length(); j++) {
-			cout << Arr[i][j] << " ";
-		}
-		cout << "\n";
-	}
-	*/
 	int size; cin >> size;
 	while (size--) {
 		string temp; cin >> temp;
