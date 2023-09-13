@@ -1,12 +1,10 @@
 #include <iostream>
 
-using namespace std;
-
 int main(){
-	int s=10,a(0), b;
+	int s=10,a(0),b;
 	while(s--){
-		cin >> b;
-		a += b;
+		std::cin>>b;
+        a+=b;
 	}
-	cout << "NESW"[a% 4];
+	std::cout << "NESW"[a% 4];
 }
