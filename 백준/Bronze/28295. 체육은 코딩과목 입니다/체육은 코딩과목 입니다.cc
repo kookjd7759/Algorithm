@@ -3,12 +3,10 @@
 using namespace std;
 
 int main(){
-	int size = 10;
-	int angle = 0;
-	while(size--){
-		int a; cin >> a;
-		angle += a;
+	int s=10,a(0), b;
+	while(s--){
+		cin >> b;
+		a += b;
 	}
-	string st[4] = {"N", "E", "S", "W"};
-	cout << st[angle % 4];
+	cout << "NESW"[a% 4];
 }
