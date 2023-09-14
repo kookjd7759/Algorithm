@@ -51,6 +51,8 @@ bool OneSpread() {
 }
 
 int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
 	int m, n, h; cin >> m >> n >> h;
 	for (int k = 0; k < 102; k++)
 		for (int i = 0; i < 102; i++)
