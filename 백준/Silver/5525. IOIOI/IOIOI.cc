@@ -12,7 +12,6 @@ int main(){
 	int cnt(0);
 	bool check = false;
 	for (int i = 0; i < m - 2; i++){
-		//cout << i << " ";
 		if (st[i] == 'I'){
 			if (st[i + 1] == 'O') {
 				if (st[i + 2] == 'I'){
@@ -35,16 +34,12 @@ int main(){
 			cnt = 0;
 		}
 	}
-	//cout << "\n";
 
 	if (cnt) vec.push_back(cnt);
 	
 	int ret(0);
-	for (const auto iter : vec){
+	for (const auto iter : vec)
 		if (iter  >= n)
 			ret += (iter - (n - 1));
-		//cout << iter << " ";
-	}
-	//cout << "\n";
 	cout << ret;
 }
