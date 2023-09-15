@@ -16,8 +16,8 @@ const int dir[4][2] = {
 };
 
 int main(){
-	//ios_base::sync_with_stdio(false);
-	//cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
 	
 	for (int i = 0; i < 1002; i++)
 		for (int j = 0; j < 1002; j++){
