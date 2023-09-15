@@ -3,10 +3,13 @@
 using namespace std;
 
 int main(){
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
 	int t; cin >> t;
+
 	while(t--){
 		long int M, N, x, y; cin >> M >> N >> x >> y;
-		//cout << M * N << "!!\n";
+
 		long int year(1);
 		if (M == x && N == y){
 			year = M;
@@ -39,7 +42,7 @@ int main(){
 			}
 		}
 		else {
-			year = 0 + x;
+			year = x;
 			while(year % M != x || year % N != y){
 				year += M;
 				if (year > (M * N)){
