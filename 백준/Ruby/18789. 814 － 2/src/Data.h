@@ -9,7 +9,7 @@
 #define W 14
 
 class Data {
-	std::string Path = "(FILEPATH)";
+	std::string Path = "C:\\Users\\kookj\\source\\repos\\814-2\\814-2\\Data.txt";
 	bool counting[10000];
 
 	struct Check {
@@ -61,7 +61,6 @@ class Data {
 	}
 
 	bool Check_func(int n);
-	std::pair<int, int> get_twoScore(); // first : main, second : count
 	
 	bool CreateBoard_inner(int digit);
 
