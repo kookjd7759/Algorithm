@@ -32,43 +32,6 @@ bool Data::Check_func(int n) {
 	return 0;
 }
 
-std::pair<int, int> Data::get_twoScore() {
-	memset(counting, false, sizeof(counting));
-	int count_cnt(0);
-	for (int i = 1; i < 1000; i++) {
-		if (counting[i]) {
-			count_cnt++;
-			continue;
-		}
-
-		if (Check_func(i)) {
-			count_cnt++;
-			counting[i] = true;
-			std::string st = std::to_string(i);
-			std::reverse(st.begin(), st.end());
-			counting[stoi(st)] = true;
-		}
-	}
-	for (int i = 1000; i < 10000; i++) {
-		if (counting[i]) {
-			count_cnt++;
-			continue;
-		}
-
-		if (Check_func(i)) {
-			counting[i] = true;
-			for (const auto iter : checkList[i - 1000].list)
-				counting[iter] = true;
-			count_cnt++;
-		}
-	}
-
-	int main_cnt(1);
-	for (; counting[main_cnt]; main_cnt++);
-	return { count_cnt, main_cnt - 1 };
-}
-
-
 bool Data::CreateBoard_inner(int digit) {
 	struct Cell {
 		int x, y;
@@ -213,9 +176,8 @@ void Data::update(int i, int j, int num, int i_, int j_, int num_) {
 }
 
 void Data::update_score() {
-	std::pair<int, int> count_main = get_twoScore();
-	score_count = count_main.first;
-	score_main = count_main.second;
+	score_count = cal_countScore();
+	score_main = cal_mainScore();
 }
 
 inline void Data::update_mainScore() {
