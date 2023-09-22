@@ -12,15 +12,15 @@ int main(){
 		};
 	int n; cin >> n;
 	for (int i = 0; i < n; i++){
-		P_2 (n * 3); P_s (n); P_2 (n);
+		P_2(n * 3); P_s(n); P_2(n);
 		cout << "\n";
 	}
 	for (int i = 0; i < n * 3; i++){
-		P_2 (n); P_s (n); P_2 (n); P_s (n); P_2 (n);
+		P_2(n); P_s(n); P_2(n); P_s(n); P_2(n);
 		cout << "\n";
 	}
 	for (int i = 0; i < n; i++){
-		P_2 (n); P_s (n); P_2(n * 3);
+		P_2(n); P_s(n); P_2(n * 3);
 		cout << "\n";
 	}
 }
