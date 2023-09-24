@@ -20,7 +20,7 @@ bool check(){
 	ll ch_3 = CCW(pos[2], pos[3], pos[0]);
 	ll ch_4 = CCW(pos[2], pos[3], pos[1]);
 	
-	if (ch_1 * ch_2 == 0 && ch_2 * ch_3 == 0){
+	if (ch_1 * ch_2 == 0 && ch_3 * ch_3 == 0){
 		if ((pos[0].first >= pos[2].first && pos[0].first <= pos[3].first) ||
 			(pos[1].first >= pos[2].first && pos[1].first <= pos[3].first))
 			return 1;
