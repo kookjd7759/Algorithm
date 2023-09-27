@@ -17,8 +17,8 @@
 <table class="table table-bordered td-center">
 	<tbody>
 		<tr>
-			<td><img alt="" src="" style="width: 182px; height: 144px;"></td>
-			<td><img alt="" src="" style="width: 139px; height: 144px;"></td>
+			<td><img alt="" src="https://upload.acmicpc.net/e6097748-dd73-41c0-8967-c956a53579f7/-/preview/" style="width: 182px; height: 144px;"></td>
+			<td><img alt="" src="https://upload.acmicpc.net/f14a1a2f-7872-4454-a6cd-44c717891a28/-/preview/" style="width: 139px; height: 144px;"></td>
 		</tr>
 		<tr>
 			<td>전개도 (1)</td>
