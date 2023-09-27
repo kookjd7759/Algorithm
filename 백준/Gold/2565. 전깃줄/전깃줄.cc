@@ -33,5 +33,11 @@ void PrintResult() {
 int main() {
 	Input();
 	Function();
-	PrintResult();
+	PrintResult();/*
+	cout << "\n\n";
+	for (int i = 0; i <= 10; i++)
+		cout << arr[i] << " ";
+	cout << "\n\n";
+	for (int i = 0; i <= 10; i++)
+		cout << DP[i] << " ";*/
 }
