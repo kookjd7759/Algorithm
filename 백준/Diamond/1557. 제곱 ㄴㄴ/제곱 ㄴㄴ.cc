@@ -10,16 +10,17 @@ int K_ori;
 
 void Create_Mobius() {
 	Mobius[1] = 1;
-	for (int i = 1; i <= 1000000; i++)
-		for (int j = 2 * i; j <= 1000000; j += i)
+	for (int i = 1; i <= 1000000; i++) 
+		for (int j = 2 * i; j <= 1000000; j += i) 
 			Mobius[j] -= Mobius[i];
 }
 
 int Cal(int num) {
 	int64_t Sum = 0;
-	for (int64_t i = 1; i * i <= num; i++)
+	for (int64_t i = 1; i * i <= num; i++) 
 		Sum += Mobius[i] * (num / (i * i));
 
+	// cout << "== Sum : " << Sum << "\n";
 	return Sum;
 }
 
@@ -28,6 +29,10 @@ void Function() {
 
 	while (true) {
 		NowSum = K - Cal(K);
+
+		// cout << "K : " << K << "\n";
+		// cout << "PrevSum : " << PrevSum << "\n";
+		// cout << "NowSum : " << NowSum << "\n\n";
 
 		if (NowSum == PrevSum)
 			break;
