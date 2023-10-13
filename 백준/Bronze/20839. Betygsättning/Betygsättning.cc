@@ -1,17 +1,15 @@
-#include <bits/stdc++.h>
+#include <iostream>
+
 using namespace std;
-double a, c, e, student[3];
 
-char getGrade(){
-    if(student[0] >= a && student[1] >= c && student[2] >= e) return 'A';
-    if(student[0] >= a / 2 && student[1] >= c && student[2] >= e) return 'B';
-    if(student[1] >= c && student[2] >= e) return 'C';
-    if(student[1] >= c / 2 && student[2] >= e / 2) return 'D';
-    return 'E';
-}
+int main() {
+    double a, c, e; cin >> a >> c >> e;
+    double arr[3];
+    for (int i = 0; i < 3; i++) cin >> arr[i];
 
-int main(){
-    cin >> a >> c >> e;
-    for(int i = 0; i < 3; i++) cin >> student[i];
-    cout << getGrade();
+    if (arr[0] >= a && arr[1] >= c && arr[2] >= e) cout << 'A';
+    else if (arr[0] >= a / 2 && arr[1] >= c && arr[2] >= e) cout << 'B';
+    else if (arr[1] >= c && arr[2] >= e) cout << 'C';
+    else if (arr[1] >= c / 2 && arr[2] >= e / 2) cout << 'D';
+    else cout << 'E';
 }
