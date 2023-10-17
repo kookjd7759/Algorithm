@@ -7,7 +7,8 @@ int main() {
 	int ret(0);
 	string st;
 	while (cin >> st) {
-		if (st[0] != '-' && !(st.size() == 1 && st[0] == '0')) ret++;
+		if (st[0] == '-' || st[0] == '0') continue;
+		ret++;
 	}
 	cout << ret;
 }
