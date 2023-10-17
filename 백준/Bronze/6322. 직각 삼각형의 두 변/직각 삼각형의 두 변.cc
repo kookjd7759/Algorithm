@@ -9,7 +9,7 @@ int main() {
 	int idx(0);
 	while (true) {
 		int a, b, c; cin >> a >> b >> c;
-		if (a == 0 && b == 0 && c == 0) break;
+		if (a + b + c == 0) break;
 		idx++;
 
 		char ver;
