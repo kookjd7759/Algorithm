@@ -8,7 +8,5 @@ int main() {
 	int n, a, b; cin >> n >> a >> b;
 	int onepage = (w / a) * (h / b);
 	if (onepage == 0) cout << -1;
-	else {
-		n % onepage == 0 ? cout << n / onepage : cout << n / onepage + 1;
-	}
+	else n % onepage == 0 ? cout << n / onepage : cout << n / onepage + 1;
 }
