@@ -10,5 +10,5 @@ int main() {
 	for (int i = a[0]; i < a[1]; i++) fence[i]++;
 	for (int i = a[2]; i < a[3]; i++) fence[i]++;
 	for (int i = 0; i <= 100; i++) if (fence[i]) ret++;
-	cout << ret;;
+	cout << ret;
 }
