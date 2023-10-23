@@ -7,9 +7,9 @@ int main() {
 	int t; cin >> t;
 	while (t--) {
 		int n; cin >> n;
-		int sum = (1 + n) * n / 2;
 		int oddSum = n * n;
 		int evenSum = oddSum + n;
+		int sum = (evenSum >> 1);
 		cout << sum << " " << oddSum << " " << evenSum << "\n";
 	}
 }
