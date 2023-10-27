@@ -1,0 +1,49 @@
+#include <iostream>
+#include <algorithm>
+#include <cstring>
+#include <string>
+#include <cmath>
+
+#include <vector>
+#include <stack>
+#include <queue>
+
+#define Sync ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+#define ll long long
+#define in cin >>
+#define out cout <<
+#define spc << " " <<
+#define endl << "\n"
+#define ent cout << "\n"
+#define Fori(x) for (int i = 0; i < x; i++)
+#define Forj(x) for (int j = 0; j < x; j++)
+#define Fork(x) for (int k = 0; k < x; k++)
+#define For1i(x) for (int i = 1; i <= x; i++)
+#define For1j(x) for (int j = 1; j <= x; j++)
+#define For1k(x) for (int k = 1; k <= x; k++)
+#define Testcase int tc; in tc; while(tc--) 
+
+using namespace std;
+
+int main() {
+	Sync;
+	
+	string st; in st;
+	int sum(0);
+	Fori(st.size()) {
+		char c = st[i];
+		if (c >= 'a' && c <= 'z') sum += c - 'a' + 1;
+		else sum += c - 'A' + 27;
+	}
+
+	if (sum == 1) out "It is a prime word.";
+	else {
+		bool ch = true;
+		for (int i = 2; i <= sum / 2; i++)
+			if (sum % i == 0) {
+				ch = false;
+				break;
+			}
+		out(ch ? "It is a prime word." : "It is not a prime word.");
+	}
+}
