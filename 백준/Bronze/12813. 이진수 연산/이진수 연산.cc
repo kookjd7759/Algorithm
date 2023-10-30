@@ -2,14 +2,13 @@
 #include <algorithm>
 #include <cstring>
 #include <string>
-#include <bitset>
 #include <cmath>
 
 #include <vector>
 #include <stack>
 #include <queue>
 
-#define Sync ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+#define Sync ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
 #define ll long long
 #define in cin >>
 #define out cout <<
@@ -27,15 +26,20 @@
 
 using namespace std;
 
-bitset<100000> a, b;
+bool a_list[100000], b_list[100000];
+char ret[100002];
 
 int main() {
 	Sync;
+
+	string a, b; in a >> b;
+	Fori(a.size()) a_list[i] = (a[i] == '1');
+	Fori(b.size()) b_list[i] = (b[i] == '1');
+
 	
-	in a >> b;
-	out (a & b) endl; 
-	out (a | b) endl;
-	out (a ^ b) endl;
-	out (~a) endl; 
-	out (~b) endl;
+	Fori(a.size()) ret[i] = (a_list[i] & b_list[i]) + '0'; out ret endl;
+	Fori(a.size()) ret[i] = (a_list[i] | b_list[i]) + '0'; out ret endl;
+	Fori(a.size()) ret[i] = (a_list[i] != b_list[i]) + '0'; out ret endl;
+	Fori(a.size()) ret[i] = (!a_list[i]) + '0'; out ret endl;
+	Fori(a.size()) ret[i] = (!b_list[i]) + '0'; out ret endl;
 }
