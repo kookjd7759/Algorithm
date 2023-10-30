@@ -8,7 +8,7 @@
 
 using namespace std;
 
-char ret[100002];
+char ret[100001];
 
 int main() {
 	Sync;
