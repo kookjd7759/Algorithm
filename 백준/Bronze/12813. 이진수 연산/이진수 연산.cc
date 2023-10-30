@@ -26,20 +26,16 @@
 
 using namespace std;
 
-bool a_list[100000], b_list[100000];
 char ret[100002];
 
 int main() {
 	Sync;
 
 	string a, b; in a >> b;
-	Fori(a.size()) a_list[i] = (a[i] == '1');
-	Fori(b.size()) b_list[i] = (b[i] == '1');
-
 	
-	Fori(a.size()) ret[i] = (a_list[i] & b_list[i]) + '0'; out ret endl;
-	Fori(a.size()) ret[i] = (a_list[i] | b_list[i]) + '0'; out ret endl;
-	Fori(a.size()) ret[i] = (a_list[i] != b_list[i]) + '0'; out ret endl;
-	Fori(a.size()) ret[i] = (!a_list[i]) + '0'; out ret endl;
-	Fori(a.size()) ret[i] = (!b_list[i]) + '0'; out ret endl;
+	Fori(a.size()) ret[i] = ((a[i] - '0') & (b[i] - '0')) ? '1' : '0'; out ret endl;
+	Fori(a.size()) ret[i] = ((a[i] - '0') | (b[i] - '0')) ? '1' : '0'; out ret endl;
+	Fori(a.size()) ret[i] = ((a[i] - '0') ^ (b[i] - '0')) ? '1' : '0'; out ret endl;
+	Fori(a.size()) ret[i] = (a[i] == '1' ? '0' : '1'); out ret endl;
+	Fori(a.size()) ret[i] = (b[i] == '1' ? '0' : '1'); out ret endl;
 }
