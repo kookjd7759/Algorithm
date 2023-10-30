@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 
 #define Sync ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
 #define in cin >>
@@ -8,16 +9,17 @@
 
 using namespace std;
 
-char ret[100001];
+char a[100001], b[100001], ret[100001];
 
 int main() {
 	Sync;
 
-	string a, b; in a >> b;
+	in a >> b;
+	int s = strlen(a);
 	
-	Fori(a.size()) ret[i] = ((a[i] - '0') & (b[i] - '0')) ? '1' : '0'; out ret endl;
-	Fori(a.size()) ret[i] = ((a[i] - '0') | (b[i] - '0')) ? '1' : '0'; out ret endl;
-	Fori(a.size()) ret[i] = ((a[i] - '0') ^ (b[i] - '0')) ? '1' : '0'; out ret endl;
-	Fori(a.size()) ret[i] = (a[i] == '1' ? '0' : '1'); out ret endl;
-	Fori(a.size()) ret[i] = (b[i] == '1' ? '0' : '1'); out ret endl;
+	Fori(s) ret[i] = ((a[i] - '0') & (b[i] - '0')) ? '1' : '0'; out ret endl;
+	Fori(s) ret[i] = ((a[i] - '0') | (b[i] - '0')) ? '1' : '0'; out ret endl;
+	Fori(s) ret[i] = ((a[i] - '0') ^ (b[i] - '0')) ? '1' : '0'; out ret endl;
+	Fori(s) ret[i] = (a[i] == '1' ? '0' : '1'); out ret endl;
+	Fori(s) ret[i] = (b[i] == '1' ? '0' : '1'); out ret endl;
 }
