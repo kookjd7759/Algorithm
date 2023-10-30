@@ -16,7 +16,7 @@ int main() {
 
 	in a >> b;
 	int s = strlen(a);
-	
+
 	Fori(s) ret[i] = (a[i] & b[i]); out ret endl;
 	Fori(s) ret[i] = (a[i] | b[i]); out ret endl;
 	Fori(s) ret[i] = (a[i] == b[i] ? '0' : '1'); out ret endl;
