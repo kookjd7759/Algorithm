@@ -17,9 +17,9 @@ int main() {
 	in a >> b;
 	int s = strlen(a);
 	
-	Fori(s) ret[i] = ((a[i] - '0') & (b[i] - '0')) ? '1' : '0'; out ret endl;
-	Fori(s) ret[i] = ((a[i] - '0') | (b[i] - '0')) ? '1' : '0'; out ret endl;
-	Fori(s) ret[i] = ((a[i] - '0') ^ (b[i] - '0')) ? '1' : '0'; out ret endl;
+	Fori(s) ret[i] = (a[i] & b[i]); out ret endl;
+	Fori(s) ret[i] = (a[i] | b[i]); out ret endl;
+	Fori(s) ret[i] = (a[i] == b[i] ? '0' : '1'); out ret endl;
 	Fori(s) ret[i] = (a[i] == '1' ? '0' : '1'); out ret endl;
 	Fori(s) ret[i] = (b[i] == '1' ? '0' : '1'); out ret endl;
 }
