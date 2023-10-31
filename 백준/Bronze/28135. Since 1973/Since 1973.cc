@@ -33,8 +33,11 @@ int main() {
 
 	int n, ret(0); in n;
 	Fori(n) {
-		string num = to_string(i);
-		if (num.find("50") != string::npos) ret++;
+		if (i % 100 == 50) ret += 1;
+		else if (i % 1000 / 10 == 50) ret += 1; 
+		else if (i % 10000 / 100 == 50) ret += 1; 
+		else if (i % 100000 / 1000 == 50) ret += 1; 
+		else if (i % 1000000 / 10000 == 50) ret += 1; 
 	}
 	out n + ret;
 }
