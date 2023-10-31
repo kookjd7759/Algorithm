@@ -31,11 +31,17 @@ int main() {
 	Sync;
 
 	int M; in M;
-	int ret(1), rotate(0);
+	ll l(1), r(1);
+	bool ro(0);
 	Roop(M) {
-		int a, b, c; in a >> b >> c;
-		ret *= (double)b / (double)a;
-		rotate += c;
+		ll a, b, c; in a >> b >> c;
+		if (c) ro = ro ? 0 : 1;
+
+		l *= a; r *= b;
+		if (r % l == 0) {
+			r /= l;
+			l = 1;
+		}
 	}
-	out(rotate & 1) spc ret;
+	out (ro & 1) spc (r / l);
 }
