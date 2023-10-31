@@ -1,43 +1,14 @@
-#include <iostream>
-#include <algorithm>
-#include <cstring>
-#include <cctype>
-#include <string>
-#include <cmath>
-
-#include <vector>
-#include <stack>
-#include <queue>
-#include <map>
-
-#define Sync ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr);
-#define ll long long
-#define in cin >>
-#define out cout <<
-#define spc << " " <<
-#define endl << "\n"
-#define ent cout << "\n"
-#define Fori(x) for (int i = 0; i < x; i++)
-#define Forj(x) for (int j = 0; j < x; j++)
-#define Fork(x) for (int k = 0; k < x; k++)
-#define For1i(x) for (int i = 1; i <= x; i++)
-#define For1j(x) for (int j = 1; j <= x; j++)
-#define For1k(x) for (int k = 1; k <= x; k++)
-#define Testcase int tc; in tc; while(tc--) 
-#define Roop(x) while(x--) 
-
-using namespace std;
+#include <stdio.h>
 
 int main() {
-	Sync;
-
-	int n, ret(0); in n;
-	Fori(n) {
+	int n, ret(0);
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++) {
 		if (i % 100 == 50) ret += 1;
 		else if (i % 1000 / 10 == 50) ret += 1; 
 		else if (i % 10000 / 100 == 50) ret += 1; 
 		else if (i % 100000 / 1000 == 50) ret += 1; 
 		else if (i % 1000000 / 10000 == 50) ret += 1; 
 	}
-	out n + ret;
+	printf("%d", n + ret);
 }
