@@ -1,0 +1,1 @@
+int main() {long long a,b;scanf("%d%d",&a,&b);printf("%lld",((b+1)*(2+b*(a-2)))/2);}
