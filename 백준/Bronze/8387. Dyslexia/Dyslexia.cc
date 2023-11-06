@@ -23,8 +23,6 @@ int main() {
 
     int n, cnt(0); in n;
     string a, b; in a >> b;
-    Fori(n) {
-        if (a[i] == b[i]) cnt++;
-    }
+    Fori(n) if (a[i] == b[i]) cnt++;
     out cnt;
 }
