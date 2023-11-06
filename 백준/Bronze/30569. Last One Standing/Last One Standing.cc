@@ -32,11 +32,6 @@ int main() {
     Fori(3) in p1[i];
     Fori(3) in p2[i];
 
-    auto state = [&]() -> void {
-        out "P1 : " spc p1[Health] endl;
-        out "P2 : " spc p2[Health] endl;
-        };
-
     while (p1[Health] > 0 && p2[Health] > 0) {
         if (p1[Load] <= 0) {
             p2[Health] -= p1[Deal];
