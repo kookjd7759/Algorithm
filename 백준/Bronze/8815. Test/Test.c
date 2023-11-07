@@ -1,1 +1,1 @@
-main(t){scanf("%d",&t);while(t--){int n;scanf("%d",&n);n%=12;printf("%c\n","BABCBCDCDADAB"[n]);}}
+main(t, n){scanf("%d",&t);while(t--){scanf("%d",&n);printf("%c\n","BABCBCDCDADAB"[n%12]);}}
