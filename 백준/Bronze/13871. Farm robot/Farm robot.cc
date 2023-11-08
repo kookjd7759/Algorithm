@@ -30,7 +30,6 @@ int main() {
 
 		if (pos > n) pos = 1;
 		else if (pos < 1) pos = n;
-		//out "pos : " << pos endl;
 		vec[pos]++;
 	}
 	out vec[s];
