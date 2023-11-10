@@ -22,6 +22,5 @@ using namespace std;
 int main() {
 	Sync;
 	string st; in st;
-	if (st[0] == st[st.size() - 1]) out "Lose";
-	else out "Win";
+	out((st[0] == st[st.size() - 1]) ? "Lose" : "Win");
 }
