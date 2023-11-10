@@ -30,8 +30,7 @@ int main() {
 	tb += ((b[0] - '0') * 10 + (b[1] - '0')) * 60;
 	tb += (b[3] - '0') * 10 + (b[4] - '0');
 
-	int ret(0);
-	ret += 24 * 60 - ta + tb;
+	int ret = 24 * 60 - ta + tb;
 	
 	int h = ret / 60;
 	int m = ret % 60;
