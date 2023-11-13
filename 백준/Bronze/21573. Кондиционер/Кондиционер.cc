@@ -23,15 +23,8 @@ int main() {
 
 	int cur, des; string mode;
 	in cur >> des >> mode;
-	if (mode == "freeze") {
-		while (cur > des) cur--;
-	}
-	else if (mode == "heat") {
-		while (cur < des) cur++;
-	}
-	else if (mode == "auto") {
-		cur = des;
-	}
-
+	if (mode == "freeze") while (cur > des) cur--;
+	else if (mode == "heat") while (cur < des) cur++;
+	else if (mode == "auto") cur = des;
 	out cur;
 }
