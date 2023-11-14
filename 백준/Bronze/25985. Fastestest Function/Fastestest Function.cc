@@ -23,7 +23,6 @@ int main() {
 	Fixed(10);
 
 	double a, b; in a >> b;
-	double c = 100 - a;
-	double d = 100 - b;
+	double c = 100 - a, d = 100 - b;
 	out a / (b * c / d);
 }
