@@ -18,11 +18,6 @@
 
 using namespace std;
 
-struct Node {
-	int x, l;
-	char c;
-};
-
 int main() {
 	Sync;
 
