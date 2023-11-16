@@ -23,8 +23,6 @@ int main() {
     
     string a, b; in a >> b;
     int ret(1);
-    Fori(4) {
-        if (a[i] != b[i]) ret *= 2;
-    }
+    Fori(4) if (a[i] != b[i]) ret *= 2;
     out ret;
 }
