@@ -24,21 +24,11 @@ int main() {
     int n, cur; string st;
     in n >> st >> cur;
     if (st == "annyong") {
-        if (cur & 1) {
-            out cur;
-        }
-        else {
-            if (cur == n) out cur - 1;
-            else out cur + 1;
-        }
+        if (cur & 1) out cur;
+        else out(cur == n ? cur - 1 : cur + 1);
     }
     else {
-        if (cur & 1) {
-            if (cur == n) out cur - 1;
-            else out cur + 1;
-        }
-        else {
-            out cur;
-        }
+        if (cur & 1) out(cur == n ? cur - 1 : cur + 1);
+        else out cur;
     }
 }
