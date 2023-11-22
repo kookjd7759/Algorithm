@@ -23,7 +23,6 @@ using namespace std;
 int main() {
 	Sync;
 
-	string key = "VWXYZABCDEFGHIJKLMNOPQRSTU";
 	while (true) {
 		string start, st, end;
 		in start;
@@ -31,7 +30,7 @@ int main() {
 		
 		instr(st); instr(st); in end;
 		Fori(st.size()) {
-			if ('A' <= st[i] && st[i] <= 'Z') out key[st[i] - 'A'];
+			if ('A' <= st[i] && st[i] <= 'Z') out "VWXYZABCDEFGHIJKLMNOPQRSTU"[st[i] - 'A'];
 			else out st[i];
 		}
 		ent;
