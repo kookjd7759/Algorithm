@@ -40,5 +40,5 @@ int main() {
 			}
 		}
 	}
-	out ret[0] spc ret[1] spc ret[2];
+	Fori(3) out ret[i] << " ";
 }
