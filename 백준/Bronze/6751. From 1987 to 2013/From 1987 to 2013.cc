@@ -35,9 +35,6 @@ int main() {
         };
     
     int n; in n;
-    set<int> s;
-    For1i(n) if (check(n)) s.insert(i);
-
     n++;
     while (!check(n)) {
         n++;
