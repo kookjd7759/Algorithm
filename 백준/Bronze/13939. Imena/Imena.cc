@@ -32,20 +32,12 @@ int main() {
 	auto ch_name = [&](string st) -> bool {
 		if ('A' <= st[0] && st[0] <= 'Z') {
 			bool ch = true;
-			if (ch_last(st)) {
-				For1i(st.size() - 2)
-					if (!('a' <= st[i] && st[i] <= 'z')) {
-						ch = false;
-						break;
-					}
-			}
-			else {
-				For1i(st.size() - 1)
-					if (!('a' <= st[i] && st[i] <= 'z')) {
-						ch = false;
-						break;
-					}
-			}
+			int size = (ch_last(st) ? st.size() - 2 : st.size() - 1);
+			For1i(size)
+				if (!('a' <= st[i] && st[i] <= 'z')) {
+					ch = false;
+					break;
+				}
 			if (ch) return true;
 		}
 		return false;
