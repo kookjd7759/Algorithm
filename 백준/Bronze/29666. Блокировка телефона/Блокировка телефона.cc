@@ -40,8 +40,6 @@ int main() {
     vec.push_back({ 1,4,7 });
     vec.push_back({ 3,6,9 });
     vec.push_back({ 2,5,8 });
-    //vec.push_back({ 0,2,5 });
-    //vec.push_back({ 0,2,8 });
     vec.push_back({ 0,5,8 });
 
     bool ch = false;
