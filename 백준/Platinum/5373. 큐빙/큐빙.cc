@@ -158,12 +158,6 @@ public:
             ent;
         }
     }
-
-    /*
-            UP(w)
-    LEFT(g) FRONT(r) RIGHT(b) BACK(o)
-            DOWN(y)
-    */
 };
 
 int main() {
