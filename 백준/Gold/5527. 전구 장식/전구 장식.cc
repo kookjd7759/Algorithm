@@ -47,6 +47,7 @@ int main() {
         }
         prev = a;
     }
+
     if (patternCnt != 1) vec.push_back(patternCnt);
     else pushSameCnt(sameCnt);
 
@@ -59,17 +60,14 @@ int main() {
 
     int ret(0);
     Fori(vec.size()) {
-        int now = vec[i];
-        // out now << " ";
-
-        int sum(0), LMR;
+        int now = vec[i], sum(0), LMR;
         if (i == 0) LMR = -1;
         else if (i == vec.size() - 1) LMR = 1;
         else LMR = 0;
 
         if (now == 0) { // 2
             if (LMR == -1) sum = vec[i + 1] + 1;
-            else if (LMR == 0) sum = max(vec[i + 1] - 1, vec[i + 1] + 1);
+            else if (LMR == 0) sum = max(vec[i - 1], vec[i + 1]) + 1;
             else sum = vec[i - 1] + 1;
         }
         else if (now == 1) { // 3
@@ -79,7 +77,7 @@ int main() {
         }
         else if (now == -1) { // >= 4
             if (LMR == -1) sum = vec[i + 1] + 2;
-            else if (LMR == 0) sum = max(vec[i - 1] + 2, vec[i + 1] + 2);
+            else if (LMR == 0) sum = max(vec[i - 1], vec[i + 1]) + 2;
             else sum = vec[i - 1] + 2;
         }
         else { // pattern
