@@ -28,9 +28,7 @@ int main() {
 	else {
 		if ((st[1] - '0') >= 5) {
 			if (st[0] != '9') st[0] = st[0] + 1;
-			else {
-				st = '1' + st;
-			}
+			else st = '1' + st;
 		}
 
 		out st[0];
