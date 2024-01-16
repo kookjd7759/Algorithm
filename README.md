@@ -3,4 +3,5 @@ This is a auto push repository for Baekjoon Online Judge created with [BaekjoonH
 
 ## Beakjoon
 <img width="8%" src=https://github.com/kookjd7759/Algorithm/assets/67672017/b415e477-0992-4e1a-bbda-f1336944103f/>
-#### Platinum V
+
+##### Platinum V - 2,000 문제 이상 해결
