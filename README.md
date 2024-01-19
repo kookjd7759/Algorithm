@@ -1,8 +1,8 @@
 # Algorithm
 This is a auto push repository for Baekjoon Online Judge created with [BaekjoonHub](https://github.com/BaekjoonHub/BaekjoonHub).
 
-## Beakjoon
-[Beakjoon Website](https://www.acmicpc.net/)
+## [Beakjoon](https://www.acmicpc.net/)
+[Beakjoon Website]
 
 [Beakjoon-profile](https://www.acmicpc.net/user/kookjd7759)
 
