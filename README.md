@@ -6,5 +6,4 @@ This is a auto push repository for Baekjoon Online Judge created with [BaekjoonH
 
 [Solved.ac Profile](https://solved.ac/profile/kookjd7759)
 
-## SW Expert Academy
-[SW Expert Academy](https://swexpertacademy.com/main/userpage/userInformation.do#)
+## [SW Expert Academy](https://swexpertacademy.com/main/userpage/userInformation.do#)
