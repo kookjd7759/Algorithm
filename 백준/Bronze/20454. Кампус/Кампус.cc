@@ -21,29 +21,29 @@
 using namespace std;
 
 int main() {
-	Sync;
-	
-	ll n, k, x, y, col, cycle; in n >> k >> x >> y;
-	col = (n / k) * x + (n - (n / k)) * y;
-	cycle = (k - 1) * y + x;
+    Sync;
 
-	Testcase{
-	ll a; in a;
-	a %= col;
-	if (a == 0) {
-		out n endl;
-		continue;
-	}
+    ll n, k, x, y, col, cycle; in n >> k >> x >> y;
+    col = (n / k) * x + (n - (n / k)) * y;
+    cycle = (k - 1) * y + x;
 
-	ll ret = (1);
-	ret += (a / cycle) * k;
-	if (a % cycle == 0) {
-		out (a / cycle) * k endl;
-		continue;
-	}
-	a %= cycle;
+    Testcase{
+    ll a; in a;
+    a %= col;
+    if (a == 0) {
+       out n endl;
+       continue;
+    }
 
-	if (0 < a <= (k - 1) * y) out ret + (a - 1) / y endl;
-	else out ret + k - 1 endl;
-	}
+    ll ret = (1);
+    ret += (a / cycle) * k;
+    if (a % cycle == 0) {
+       out(a / cycle)* k endl;
+       continue;
+    }
+    a %= cycle;
+
+    if (0 < a && a <= (k - 1) * y) out ret + (a - 1) / y endl;
+    else out ret + k - 1 endl;
+    }
 }
