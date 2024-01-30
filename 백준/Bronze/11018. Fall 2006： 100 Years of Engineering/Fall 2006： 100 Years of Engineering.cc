@@ -20,10 +20,6 @@
 
 using namespace std;
 
-int l, h, p, e, n;
-double ls(0), hs(0), ps(0), es(0);
-double lc(0), hc(0), pc(0), ec(0);
-
 int main() {
     Sync;
     Fixed(2);
