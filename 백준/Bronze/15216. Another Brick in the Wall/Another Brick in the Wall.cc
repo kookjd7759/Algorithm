@@ -30,16 +30,9 @@ int main() {
     int complete(0), rest(w);
     bool suc = false;
     Fori(n) {
-        if (rest == bricks[i]) {
-            complete++;
-            rest = w;
-        }
-        else if (rest > bricks[i]) {
-            rest -= bricks[i];
-        }
-        else {
-            break;
-        }
+        if (rest == bricks[i]) complete++, rest = w;
+        else if (rest > bricks[i]) rest -= bricks[i];
+        else break;
 
         if (complete == h) {
             suc = true;
