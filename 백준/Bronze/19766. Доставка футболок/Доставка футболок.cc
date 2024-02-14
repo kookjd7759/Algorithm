@@ -32,15 +32,9 @@ int main() {
     int now(0);
     Fori(n) {
         now += time[i];
-        if (ready[i] <= now) { 
-            now += t;
-        }
-        else if (ready[i] - now <= k) {
-            now += (ready[i] - now) + t;
-        }
-        else {
-            now += k;
-        }
+        if (ready[i] <= now) now += t;
+        else if (ready[i] - now <= k) now += (ready[i] - now) + t;
+        else now += k;
     }
     out now;
 }
