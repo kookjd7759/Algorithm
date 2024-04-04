@@ -28,23 +28,27 @@ int main() {
 	int n; in n;
 	Fori(n) {
 		int a; in a;
-		if (s.count(a) == 0) vec.push_back(a);
+		if (s.count(a) == 0) {
+			vec.push_back(a);
+			s.insert(a);
+		}
 	}
 	sort(vec.begin(), vec.end());
-
-	for (int i = 0; i < vec.size() - 2; i++) {
-		int first = vec[i];
-		for (int j = i + 1; j < vec.size() - 1; j++) {
-			if (first + 3 == vec[j]) {
-				int second = vec[j];
-				for (int k = j + 1; k < vec.size(); k++) {
-					if (second + 3 == vec[k]) {
-						out "Yes";
-						return 0;
+	if (vec.size() >= 3) {
+		for (int i = 0; i < vec.size() - 2; i++) {
+			int first = vec[i];
+			for (int j = i + 1; j < vec.size() - 1; j++) {
+				if (first + 3 == vec[j]) {
+					for (int k = j + 1; k < vec.size(); k++) {
+						if (first + 6 == vec[k]) {
+							out "Yes";
+							return 0;
+						}
+						else if (first + 6 < vec[k]) break;
 					}
 				}
+				else if (first + 3 < vec[j]) break;
 			}
-			else if (first + 3 < vec[j]) break;
 		}
 	}
 	out "No";
