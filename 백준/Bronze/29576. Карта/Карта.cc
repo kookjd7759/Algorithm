@@ -24,8 +24,6 @@ int main() {
 	Sync;
 
 	int n, k; in n >> k; n--, k--;
-	if (k == 0) {
-		out(n == 0 ? 0 : -1);
-	}
+	if (k == 0) out(n == 0 ? 0 : -1);
 	else out(n % k == 0 ? n / k : -1);
 }
