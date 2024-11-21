@@ -21,10 +21,6 @@
 
 using namespace std;
 
-bool check(int n, int a, int b) {
-	return (n == a || n == b);
-}
-
 int main() {
 	Sync;
 
