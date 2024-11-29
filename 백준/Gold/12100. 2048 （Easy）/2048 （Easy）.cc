@@ -36,7 +36,7 @@ struct Board {
 		Fori(size) board[i] = new int[size];
 		Fori(size) Forj(size) in board[i][j], maxi = max(maxi, board[i][j]);
 	}
-	Board(){}
+	Board() {}
 	Board(const Board& other) {
 		size = other.size;
 		maxi = other.maxi;
@@ -138,13 +138,6 @@ struct Board {
 	void move(Dir dir) {
 		if (dir == UP || dir == DOWN) Fori(size) col_move(dir, i);
 		else Fori(size) row_move(dir, i);
-	}
-
-	void print() {
-		Fori(size) {
-			Forj(size) out board[i][j] << ' ';
-			ent;
-		}
 	}
 };
 
