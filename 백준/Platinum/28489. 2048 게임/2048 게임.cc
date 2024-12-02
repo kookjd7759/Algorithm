@@ -32,12 +32,15 @@ bool isSame(int a[4][4], int b[4][4]) {
 	return true;
 }
 
+using Bitboard = uint16_t;
+
 class Game2048 {
 private:
 	int board[4][4];
+	int depth = 0;
 
 	int moveLine(Dir dir, int idx) {
-		int dest, cnt(0), score(0);
+		int dest, score(0);
 
 		if (dir == LEFT) {
 			dest = 0;
@@ -89,7 +92,7 @@ private:
 				if (!board[dest][idx]) board[dest][idx] = board[i][idx];
 				else {
 					if (board[dest][idx] & board[i][idx]) {
-						score += board[idx][dest];
+						score += board[dest][idx];
 						board[dest][idx] <<= 1;
 						dest++;
 					}
@@ -110,7 +113,7 @@ private:
 				if (!board[dest][idx]) board[dest][idx] = board[i][idx];
 				else {
 					if (board[dest][idx] & board[i][idx]) {
-						score += board[idx][dest];
+						score += board[dest][idx];
 						board[dest][idx] <<= 1;
 						dest--;
 					}
@@ -131,45 +134,82 @@ private:
 		Fori(4) score += moveLine(dir, i);
 		return score;
 	}
+
+	int search(Dir dir, int cnt) {
+		int score(0);
+		if (!cnt) {
+			int temp[4][4]; memcpy(temp, board, sizeof(board));
+			score = move(dir);
+			memcpy(board, temp, sizeof(temp));
+			return score;
+		}
+
+		for (Dir nextDir = UP; nextDir < DIR_NUM; ++nextDir) {
+			int temp[4][4]; memcpy(temp, board, sizeof(board));
+			score += search(nextDir, cnt - 1);
+			memcpy(board, temp, sizeof(temp));
+		}
+		return score;
+	}
+
+	Dir findRandomMove() {
+		Dir ret(UP);
+		for (Dir dir = UP; dir < DIR_NUM; ++dir) {
+			int temp[4][4]; memcpy(temp, board, sizeof(board));
+			move(dir);
+			if (!isSame(temp, board)) ret = dir;
+			memcpy(board, temp, sizeof(temp));
+		}
+		return ret;
+	}
 	Dir findBestMove() {
-		Dir bestDir(DIR_NULL), random(UP);
+		// print();
+		Dir bestDir = findRandomMove();
 		int bestScore(0);
 		for (Dir dir = UP; dir < DIR_NUM; ++dir) {
 			int temp[4][4]; memcpy(temp, board, sizeof(board));
-			int score = move(dir);
-			if (!isSame(temp, board)) random = dir;
+			int score = search(dir, depth);
 			if (bestScore < score) {
 				bestDir = dir;
 				bestScore = score;
 			}
-			memcpy(board, temp, sizeof(temp));
+			memcpy(board, temp, sizeof(board));
 		}
 
-		return bestDir == DIR_NULL ? random : bestDir;
+		return bestDir;
 	}
 
 public:
 	Game2048(){ Fori(4) Forj(4) board[i][j] = 0; }
 
 	void print() {
-		int cur_score(0);
+		cout << "---\n";
 		Fori(4) {
-			Forj(4) out board[i][j] << ' ', cur_score = max(cur_score, board[i][j]);
+			Forj(4) out board[i][j] << ' ';
 			ent;
 		}
-		out "current score : " << cur_score << "\n";
+		cout << "---\n";
 	}
 
 	void start() {
 		while (true) {
-			int create; in create; create--;
-			if (create == -2) return;
-			board[create / 4][create % 4] = 2;
-			// print();
+			int pos; in pos; pos--;
+			if (pos == -2) return;
+			board[pos / 4][pos % 4] = 2;
 			Dir moveDir = findBestMove();
-			out dir_to_string[moveDir] << endl;
 			move(moveDir);
-			// print();
+			out dir_to_string[moveDir] << endl;
+		}
+	}
+
+	void test() {
+		while (true) {
+			int pos; in pos; pos--;
+			board[pos / 4][pos % 4] = 2;
+			for (Dir dir = UP; dir < DIR_NUM; ++dir)
+				out dir_to_string[dir] spc search(dir, 0) << "\n";
+			move(findRandomMove());
+			print();
 		}
 	}
 };
