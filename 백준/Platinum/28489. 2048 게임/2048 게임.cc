@@ -27,6 +27,11 @@ enum Dir {
 string dir_to_string[4]{ "UP", "DOWN", "LEFT", "RIGHT" };
 Dir& operator++(Dir& d) { d = (Dir)(d + 1); return d; }
 
+bool isSame(int a[4][4], int b[4][4]) {
+	Fori(4) Forj(4) if (a[i][j] != b[i][j]) return false;
+	return true;
+}
+
 class Game2048 {
 private:
 	int board[4][4];
@@ -127,11 +132,12 @@ private:
 		return score;
 	}
 	Dir findBestMove() {
-		Dir bestDir(DIR_NULL);
+		Dir bestDir(DIR_NULL), random(UP);
 		int bestScore(0);
 		for (Dir dir = UP; dir < DIR_NUM; ++dir) {
 			int temp[4][4]; memcpy(temp, board, sizeof(board));
 			int score = move(dir);
+			if (!isSame(temp, board)) random = dir;
 			if (bestScore < score) {
 				bestDir = dir;
 				bestScore = score;
@@ -139,11 +145,7 @@ private:
 			memcpy(board, temp, sizeof(temp));
 		}
 
-		if (bestDir == DIR_NULL) {
-			bestDir = UP;
-		}
-
-		return bestDir;
+		return bestDir == DIR_NULL ? random : bestDir;
 	}
 
 public:
@@ -159,11 +161,11 @@ public:
 	}
 
 	void start() {
-		// print();
 		while (true) {
 			int create; in create; create--;
 			if (create == -2) return;
 			board[create / 4][create % 4] = 2;
+			// print();
 			Dir moveDir = findBestMove();
 			out dir_to_string[moveDir] << endl;
 			move(moveDir);
