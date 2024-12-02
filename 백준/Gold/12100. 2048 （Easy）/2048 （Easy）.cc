@@ -31,7 +31,7 @@ void update_maxi() { Fori(SIZE) Forj(SIZE) ans = max(ans, board[i][j]); }
 void move() {
 	Fori(SIZE) {
 		int dest = 0;
-		For1j(SIZE + 1) {
+		For1j(SIZE - 1) {
 			if (!board[i][j]) continue;
 
 			if (!board[i][dest]) board[i][dest] = board[i][j];
@@ -59,28 +59,7 @@ void DFS(int cnt) {
 
 	Fori(4) {
 		int temp[20][20]; memcpy(temp, board, sizeof(board));
-		for (int row = 0; row < SIZE; row++) {
-			int loc = 0, ret = 0;
-			bool flag = false;
-			for (int i = 0; i < SIZE; i++) {
-				if (board[row][i] != 0) {
-					if (board[row][i] == board[row][loc] && (i != 0 && flag)) {
-						board[row][loc] += board[row][loc];
-						board[row][i] = 0;
-						flag = false;
-						loc++;
-					}
-					else {
-						if (flag)
-							loc++;
-						ret = board[row][i];
-						board[row][i] = 0;
-						board[row][loc] = ret;
-						flag = true;
-					}
-				}
-			}
-		}
+		move();
 		DFS(cnt - 1);
 		rotation(temp);
 	}
