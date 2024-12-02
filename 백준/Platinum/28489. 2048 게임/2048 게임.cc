@@ -159,7 +159,7 @@ public:
 	}
 
 	void start() {
-		//print();
+		// print();
 		while (true) {
 			int create; in create; create--;
 			if (create == -2) return;
@@ -167,7 +167,7 @@ public:
 			Dir moveDir = findBestMove();
 			out dir_to_string[moveDir] << endl;
 			move(moveDir);
-			//print();
+			// print();
 		}
 	}
 };
