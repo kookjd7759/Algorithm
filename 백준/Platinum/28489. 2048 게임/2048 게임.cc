@@ -130,11 +130,13 @@ private:
 		Dir bestDir(DIR_NULL);
 		int bestScore(0);
 		for (Dir dir = UP; dir < DIR_NUM; ++dir) {
+			int temp[4][4]; memcpy(temp, board, sizeof(board));
 			int score = move(dir);
 			if (bestScore < score) {
 				bestDir = dir;
 				bestScore = score;
 			}
+			memcpy(board, temp, sizeof(temp));
 		}
 
 		if (bestDir == DIR_NULL) {
@@ -147,12 +149,25 @@ private:
 public:
 	Game2048(){ Fori(4) Forj(4) board[i][j] = 0; }
 
+	void print() {
+		int cur_score(0);
+		Fori(4) {
+			Forj(4) out board[i][j] << ' ', cur_score = max(cur_score, board[i][j]);
+			ent;
+		}
+		out "current score : " << cur_score << "\n";
+	}
+
 	void start() {
+		//print();
 		while (true) {
 			int create; in create; create--;
 			if (create == -2) return;
 			board[create / 4][create % 4] = 2;
-			out dir_to_string[findBestMove()] << endl;
+			Dir moveDir = findBestMove();
+			out dir_to_string[moveDir] << endl;
+			move(moveDir);
+			//print();
 		}
 	}
 };
