@@ -23,13 +23,23 @@ using namespace std;
 
 enum Dir {
 	UP, LEFT, RIGHT, DOWN,
-	DIR_NUM
+	DIR_NUM, DIR_NULL
 };
 Dir& operator++(Dir& d) { d = (Dir)(d + 1); return d; }
+constexpr inline Dir opposite(const Dir& d) {
+	if (d == UP) return DOWN;
+	else if (d == LEFT) return RIGHT;
+	else if (d == RIGHT) return LEFT;
+	else if (d == DOWN) return UP;
+	else return DIR_NULL;
+}
 
 struct Board {
 	int** board = nullptr;
 	int size = 0, maxi = 0;
+	Dir prevMove = DIR_NULL;
+	bool prevJoin = false;
+
 	void init() {
 		in size;
 		board = new int* [size];
@@ -45,8 +55,9 @@ struct Board {
 		Fori(size) Forj(size) board[i][j] = other.board[i][j];
 	}
 
-	void row_move(Dir dir, int idx) {
+	void moveLine(Dir dir, int idx) {
 		int dest, cnt(0);
+		bool join = false;
 		if (dir == LEFT) {
 			dest = 0;
 			for (int i = 1; i < size; i++) {
@@ -58,6 +69,7 @@ struct Board {
 						board[idx][dest] <<= 1;
 						maxi = max(maxi, board[idx][dest]);
 						dest++;
+						join = true;
 					}
 					else {
 						dest++;
@@ -68,7 +80,7 @@ struct Board {
 				board[idx][i] = 0;
 			}
 		}
-		else {
+		else if (dir == RIGHT) {
 			dest = size - 1;
 			for (int i = size - 2; i >= 0; i--) {
 				if (!board[idx][i]) continue;
@@ -79,6 +91,7 @@ struct Board {
 						board[idx][dest] <<= 1;
 						maxi = max(maxi, board[idx][dest]);
 						dest--;
+						join = true;
 					}
 					else {
 						dest--;
@@ -89,10 +102,7 @@ struct Board {
 				board[idx][i] = 0;
 			}
 		}
-	}
-	void col_move(Dir dir, int idx) {
-		int dest, cnt(0);
-		if (dir == UP) {
+		else if (dir == UP) {
 			dest = 0;
 			for (int i = 1; i < size; i++) {
 				if (!board[i][idx]) continue;
@@ -103,6 +113,7 @@ struct Board {
 						board[dest][idx] <<= 1;
 						maxi = max(maxi, board[dest][idx]);
 						dest++;
+						join = true;
 					}
 					else {
 						dest++;
@@ -124,6 +135,7 @@ struct Board {
 						board[dest][idx] <<= 1;
 						maxi = max(maxi, board[dest][idx]);
 						dest--;
+						join = true;
 					}
 					else {
 						dest--;
@@ -134,10 +146,18 @@ struct Board {
 				board[i][idx] = 0;
 			}
 		}
+
+		prevJoin = join;
 	}
 	void move(Dir dir) {
-		if (dir == UP || dir == DOWN) Fori(size) col_move(dir, i);
-		else Fori(size) row_move(dir, i);
+		Fori(size) moveLine(dir, i);
+
+		prevMove = dir;
+	}
+
+	bool operator==(const Board& other) const {
+		Fori(size) Forj(size) if (board[i][j] != other.board[i][j]) return false;
+		return true;
 	}
 };
 
@@ -149,8 +169,10 @@ void DFS(Board& board, int cnt) {
 	if (!cnt) return;
 
 	for (Dir dir = UP; dir < DIR_NUM; ++dir) {
+		if (!board.prevJoin && opposite(board.prevMove) == dir) continue;
 		Board next(board);
 		next.move(dir);
+		if (board == next) continue;
 		DFS(next, cnt - 1);
 	}
 }
@@ -159,6 +181,7 @@ int main() {
 	Sync;
 
 	int SIZE = 5;
+
 	Board board; board.init();
 	DFS(board, SIZE);
 	out maxi;
