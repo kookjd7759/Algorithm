@@ -248,6 +248,13 @@ public:
 			}
 		}
 
+		int temp[4][4]; memcpy(temp, board, sizeof(board));
+
+		move(bestDir);
+		if (isSame(temp, board)) out "ERROR!!!\n";
+
+		memcpy(board, temp, sizeof(temp));
+
 		return bestDir;
 	}
 
@@ -296,9 +303,9 @@ public:
 			int score(0);
 			Fori(4) Forj(4) score = max(score, board[i][j]);
 			sum += score;
-			//print();
+			// print();
 		}
-		//out "score :" spc(sum / 16) << "\n";
+		// out "score :" spc(sum / 16) << "\n";
 		return (sum / 16);
 	}
 	int getCreatePos() const {
@@ -322,13 +329,13 @@ public:
 };
 
 void learning() {
-	int maxi_value[10]{ 13, 11, 3, 6, 5, 4, 4, 2, 1, 0 };
+	int maxi_value[10]{ 40, 11, 3, 6, 5, 4, 4, 2, 1, 0 };
 	int size = 50, maxiScore(0);
 	int idx(0), cnt(0);
 	while (true) {
 		if (cnt == 10) break;
 		int value[10]; memcpy(value, maxi_value, sizeof(maxi_value));
-		value[idx]++;
+		value[idx] += 10;
 		init_weight(value);
 		out "current value [";
 		Fori(10) {
@@ -368,10 +375,9 @@ int main() {
 	Interactive;
 
 	
-	int value[10]{ 13, 11, 3, 6, 5, 4, 4, 2, 1, 0 };
+	int value[10]{60, 11, 3, 6, 5, 4, 4, 2, 1, 0};
 	init_weight(value);
 	Game2048 game;
 	game.start();
-
-	//learning();
+	
 }
