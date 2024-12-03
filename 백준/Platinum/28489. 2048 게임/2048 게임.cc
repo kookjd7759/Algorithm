@@ -11,12 +11,12 @@
 #define spc << " " <<
 // #define endl << "\n"
 #define ent cout << "\n"
-#define Fori(x) for (int i = 0; i < x; i++)
-#define Forj(x) for (int j = 0; j < x; j++)
-#define Fork(x) for (int k = 0; k < x; k++)
-#define For1i(x) for (int i = 1; i <= x; i++)
-#define For1j(x) for (int j = 1; j <= x; j++)
-#define For1k(x) for (int k = 1; k <= x; k++)
+#define Fori(x) for (int i = 0; i < x; ++i)
+#define Forj(x) for (int j = 0; j < x; ++j)
+#define Fork(x) for (int k = 0; k < x; ++k)
+#define For1i(x) for (int i = 1; i <= x; ++i)
+#define For1j(x) for (int j = 1; j <= x; ++j)
+#define For1k(x) for (int k = 1; k <= x; ++k)
 #define nonecountingTC int tc; in tc; while(tc--) 
 #define countingTC int tc; in tc; for (int TCcounter = 1; TCcounter <= tc; TCcounter++) 
 
@@ -33,21 +33,46 @@ bool isSame(int a[4][4], int b[4][4]) {
 	return true;
 }
 
+int count_weight;
+int maxi_weight;
+int empty_weight;
+int monotonic_weight;
+void init_weight(int count, int maxi, int empty, int monotonic) {
+	count_weight = count;
+	maxi_weight = maxi;
+	empty_weight = empty;
+	monotonic_weight = monotonic;
+}
+
 struct MoveData {
 	int count = 0, maxi = 0;
 
 	void add(int n) { count++; maxi = max(maxi, n); }
 	void add(MoveData md) { count += md.count; maxi = max(maxi, md.maxi); }
-
-	int evaluation() {
-		int score = (8 << count) + maxi;
-		return score;
-	}
 };
 
 class Game2048 {
 public:
 	int board[4][4];
+	pair<int, int> maxiPos;
+	inline bool isSafe(int x, int y) const { return (x >= 0 && x < 4 && y >= 0 && y < 4); }
+	inline int getEmptySize() const {
+		int cnt(0);
+		Fori(4) Forj(4) if (!board[i][j]) cnt++;
+		return cnt;
+	}
+	inline int getScore() const {
+		int score(0);
+		Fori(4) Forj(4) score = max(score, board[i][j]);
+		return score;
+	}
+	inline void updateMaxiPos() {
+		int maxiNum(0);
+		Fori(4) Forj(4) if (maxiNum < board[i][j]) {
+			maxiNum = board[i][j];
+			maxiPos.first = i, maxiPos.second = j;
+		}
+	}
 
 	MoveData moveLine(Dir dir, int idx) {
 		int dest;
@@ -143,6 +168,7 @@ public:
 	MoveData move(Dir dir) {
 		MoveData moveData;
 		Fori(4) moveData.add(moveLine(dir, i));
+		updateMaxiPos();
 		return moveData;
 	}
 	vector<Dir> getLegalMove() {
@@ -156,40 +182,96 @@ public:
 		return vec;
 	}
 
-	int search(Dir dir) {
-		int score(0);
+	int monotonic_score() {
+		int score(0), x_change, y_change;
+		vector<int> row, col;
+		if (maxiPos.first == 0 && maxiPos.second == 0) { x_change = +1; y_change = +1; }
+		else if (maxiPos.first == 0 && maxiPos.second == 3) { x_change = -1; y_change = +1; }
+		else if (maxiPos.first == 3 && maxiPos.second == 0) { x_change = +1; y_change = -1; }
+		else if (maxiPos.first == 3 && maxiPos.second == 3) { x_change = -1; y_change = -1; }
+		else return -100;
 
-		int temp[4][4]; memcpy(temp, board, sizeof(board));
-		score = move(dir).evaluation();
-		memcpy(board, temp, sizeof(temp));
+		Fori(4) {
+			if (board[maxiPos.first][maxiPos.second + x_change * i]) row.push_back(board[maxiPos.first][maxiPos.second + x_change * i]);
+			if (board[maxiPos.first + y_change * i][maxiPos.second]) col.push_back(board[maxiPos.first + y_change * i][maxiPos.second]);
+		}
+		
+		if (row.size() >= 2) {
+			Fori(row.size() - 1) {
+				if (row[i] >= row[i + 1]) score++;
+				else score -= 10;
+			}
+		}
+
+		if (col.size() >= 2) {
+			Fori(col.size() - 1) {
+				if (col[i] >= col[i + 1]) score++;
+				else score -= 10;
+			}
+		}
+		/*
+		out "row [ ";
+		Fori(row.size()) {
+			out row[i];
+			if (i != row.size() - 1) out ", ";
+		}
+		out " ]\n";
+
+		out "col [ ";
+		Fori(col.size()) {
+			out col[i];
+			if (i != col.size() - 1) out ", ";
+		}
+		out " ]\n";
+		*/
+		// out "mono score : " << score << "\n";
 		return score;
+	}
+	int evaluation(MoveData moveData) {
+		int score(0);
+		score += getEmptySize() * empty_weight;
+		score += (moveData.count * count_weight);
+		score += moveData.maxi * maxi_weight;
+		score += monotonic_score() * monotonic_weight;
+		return score;
+	}
+	int search(Dir dir) {
+		int temp[4][4]; memcpy(temp, board, sizeof(board));
+		pair<int, int> tempPos = maxiPos;
+
+		MoveData moveData = move(dir);
+		int score = evaluation(moveData);
+		// int score = monotonic_score();
+		memcpy(board, temp, sizeof(temp));
+		maxiPos = tempPos;
 
 		return score;
 	}
 
 	Dir findBestMove() {
-		//print();
 		vector<Dir> legalMove = getLegalMove();
 		Dir bestDir = legalMove[0];
 		int bestScore(0);
 
 		for (const Dir& dir : legalMove) {
-			int temp[4][4]; memcpy(temp, board, sizeof(board));
 			int score = search(dir);
-			//out dir_to_string[dir] spc search(dir, 0) << "\n";
+			//out dir_to_string[dir] << " : " << score << "\n";
 			if (bestScore < score) {
 				bestDir = dir;
 				bestScore = score;
 			}
-			memcpy(board, temp, sizeof(board));
 		}
 
 		return bestDir;
 	}
 
-	void init() { Fori(4) Forj(4) board[i][j] = 0; }
+	void init() { 
+		Fori(4) Forj(4) board[i][j] = 0; 
+		maxiPos.first = -1, maxiPos.second = -1;
+	}
 	Game2048() { init(); }
-	void print() {
+
+	void print() const {
 		out "┌────────────\n";
 		Fori(4) {
 			out "│";
@@ -198,12 +280,12 @@ public:
 		}
 		out "└────────────\n";
 	}
-
 	void start() {
 		while (true) {
 			int pos; in pos; pos--;
 			if (pos == -2) return;
 			board[pos / 4][pos % 4] = 2;
+			//print();
 			Dir moveDir = findBestMove();
 			move(moveDir);
 			out dir_to_string[moveDir] << endl;
@@ -211,9 +293,9 @@ public:
 		}
 	}
 
-	void selfTest(int size) {
+	int selfTest() {
 		int emptySize(16), sum(0);
-		Fori(size) {
+		Fori(16) {
 			init();
 			while (true) {
 				int pos = getCreatePos(); pos--;
@@ -225,21 +307,12 @@ public:
 			int score = getScore();
 			sum += score;
 		}
-		out "score :" spc(sum / size);
-	}
-	int getScore() const {
-		int score(0);
-		Fori(4) Forj(4) score = max(score, board[i][j]);
-		return score;
-	}
-	int getSize() const {
-		int cnt(0);
-		Fori(4) Forj(4) if (!board[i][j]) cnt++;
-		return cnt;
+		//out "score :" spc(sum / 16) << "\n";
+		return (sum / 16);
 	}
 	int getCreatePos() const {
 		random_device rd; mt19937 gen(rd());
-		uniform_int_distribution<> dis(1, getSize());
+		uniform_int_distribution<> dis(1, getEmptySize());
 		int cnt(0), rand(dis(gen));
 		Fori(4) Forj(4) {
 			if (!board[i][j]) cnt++;
@@ -252,10 +325,32 @@ public:
 	}
 };
 
+void learning() {
+	int testSize = 50;
+	Fori(10) {
+		init_weight(3, 2, 1, i);
+		out "[Weight Data]\n";
+		out " - count : " << count_weight << "\n";
+		out " - maxi : " << maxi_weight << "\n";
+		out " - empty : " << empty_weight << "\n";
+		out " - monotonic : " << monotonic_weight << "\n";
+
+		int sum(0);
+		for (int test = 1; test < testSize; ++test) {
+			Game2048 game;
+			sum += game.selfTest();
+		}
+
+		out "\033[31m[score] : " << (sum / testSize) << "\033[0m\n";
+	}
+}
+
 int main() {
 	Interactive;
-
+	
 	Game2048 game;
-	// game.selfTest(16);
+	init_weight(2, 1, 1, 4);
 	game.start();
+	
+	//learning();
 }
