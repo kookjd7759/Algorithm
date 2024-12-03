@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <random>
 
 #define Sync ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr)
 #define Fixed(x) cout << fixed; cout.precision(x)
@@ -32,13 +33,25 @@ bool isSame(int a[4][4], int b[4][4]) {
 	return true;
 }
 
-class Game2048 {
-private:
-	int board[4][4];
-	int depth = 0;
+struct MoveData {
+	int count = 0, maxi = 0;
 
-	int moveLine(Dir dir, int idx) {
-		int dest, score(0);
+	void add(int n) { count++; maxi = max(maxi, n); }
+	void add(MoveData md) { count += md.count; maxi = max(maxi, md.maxi); }
+
+	int evaluation() {
+		int score = (8 << count) + maxi;
+		return score;
+	}
+};
+
+class Game2048 {
+public:
+	int board[4][4];
+
+	MoveData moveLine(Dir dir, int idx) {
+		int dest;
+		MoveData moveData;
 
 		if (dir == LEFT) {
 			dest = 0;
@@ -48,7 +61,7 @@ private:
 				if (!board[idx][dest]) board[idx][dest] = board[idx][i];
 				else {
 					if (board[idx][dest] & board[idx][i]) {
-						score += board[idx][dest];
+						moveData.add(board[idx][dest]);
 						board[idx][dest] <<= 1;
 						dest++;
 					}
@@ -69,7 +82,7 @@ private:
 				if (!board[idx][dest]) board[idx][dest] = board[idx][i];
 				else {
 					if (board[idx][dest] & board[idx][i]) {
-						score += board[idx][dest];
+						moveData.add(board[idx][dest]);
 						board[idx][dest] <<= 1;
 						dest--;
 					}
@@ -90,7 +103,7 @@ private:
 				if (!board[dest][idx]) board[dest][idx] = board[i][idx];
 				else {
 					if (board[dest][idx] & board[i][idx]) {
-						score += board[dest][idx];
+						moveData.add(board[dest][idx]);
 						board[dest][idx] <<= 1;
 						dest++;
 					}
@@ -111,7 +124,7 @@ private:
 				if (!board[dest][idx]) board[dest][idx] = board[i][idx];
 				else {
 					if (board[dest][idx] & board[i][idx]) {
-						score += board[dest][idx];
+						moveData.add(board[dest][idx]);
 						board[dest][idx] <<= 1;
 						dest--;
 					}
@@ -125,16 +138,15 @@ private:
 			}
 		}
 
-		return score;
+		return moveData;
 	}
-	int move(Dir dir) {
-		int score(0);
-		Fori(4) score += moveLine(dir, i);
-		return score;
+	MoveData move(Dir dir) {
+		MoveData moveData;
+		Fori(4) moveData.add(moveLine(dir, i));
+		return moveData;
 	}
 	vector<Dir> getLegalMove() {
 		vector<Dir> vec;
-		Dir ret(UP);
 		for (Dir dir = UP; dir < DIR_NUM; ++dir) {
 			int temp[4][4]; memcpy(temp, board, sizeof(board));
 			move(dir);
@@ -144,21 +156,14 @@ private:
 		return vec;
 	}
 
-	int search(Dir dir, int cnt) {
+	int search(Dir dir) {
 		int score(0);
-		if (!cnt) {
-			int temp[4][4]; memcpy(temp, board, sizeof(board));
-			score = move(dir);
-			memcpy(board, temp, sizeof(temp));
-			return score;
-		}
 
-		vector<Dir> legalMove = getLegalMove();
-		for (const Dir& nextDir : legalMove) {
-			int temp[4][4]; memcpy(temp, board, sizeof(board));
-			score += search(nextDir, cnt - 1);
-			memcpy(board, temp, sizeof(temp));
-		}
+		int temp[4][4]; memcpy(temp, board, sizeof(board));
+		score = move(dir).evaluation();
+		memcpy(board, temp, sizeof(temp));
+		return score;
+
 		return score;
 	}
 
@@ -170,7 +175,7 @@ private:
 
 		for (const Dir& dir : legalMove) {
 			int temp[4][4]; memcpy(temp, board, sizeof(board));
-			int score = search(dir, depth);
+			int score = search(dir);
 			//out dir_to_string[dir] spc search(dir, 0) << "\n";
 			if (bestScore < score) {
 				bestDir = dir;
@@ -182,16 +187,16 @@ private:
 		return bestDir;
 	}
 
-public:
-	Game2048(){ Fori(4) Forj(4) board[i][j] = 0; }
-
+	void init() { Fori(4) Forj(4) board[i][j] = 0; }
+	Game2048() { init(); }
 	void print() {
-		cout << "---\n";
+		out "┌────────────\n";
 		Fori(4) {
+			out "│";
 			Forj(4) out board[i][j] << ' ';
 			ent;
 		}
-		cout << "---\n";
+		out "└────────────\n";
 	}
 
 	void start() {
@@ -206,14 +211,44 @@ public:
 		}
 	}
 
-	void test() {
-		while (true) {
-			int pos; in pos; pos--;
-			board[pos / 4][pos % 4] = 2;
-			for (Dir dir = UP; dir < DIR_NUM; ++dir)
-				out dir_to_string[dir] spc search(dir, 0) << "\n";
-			print();
+	void selfTest(int size) {
+		int emptySize(16), sum(0);
+		Fori(size) {
+			init();
+			while (true) {
+				int pos = getCreatePos(); pos--;
+				board[pos / 4][pos % 4] = 2;
+				if (isEnd()) break;
+				Dir moveDir = findBestMove();
+				move(moveDir);
+			}
+			int score = getScore();
+			sum += score;
 		}
+		out "score :" spc(sum / size);
+	}
+	int getScore() const {
+		int score(0);
+		Fori(4) Forj(4) score = max(score, board[i][j]);
+		return score;
+	}
+	int getSize() const {
+		int cnt(0);
+		Fori(4) Forj(4) if (!board[i][j]) cnt++;
+		return cnt;
+	}
+	int getCreatePos() const {
+		random_device rd; mt19937 gen(rd());
+		uniform_int_distribution<> dis(1, getSize());
+		int cnt(0), rand(dis(gen));
+		Fori(4) Forj(4) {
+			if (!board[i][j]) cnt++;
+			if (cnt == rand) return (i * 4 + j + 1);
+		}
+	}
+	bool isEnd() {
+		vector<Dir> legalMove = getLegalMove();
+		return !legalMove.size();
 	}
 };
 
@@ -221,5 +256,6 @@ int main() {
 	Interactive;
 
 	Game2048 game;
+	// game.selfTest(16);
 	game.start();
 }
