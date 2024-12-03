@@ -32,8 +32,6 @@ bool isSame(int a[4][4], int b[4][4]) {
 	return true;
 }
 
-using Bitboard = uint16_t;
-
 class Game2048 {
 private:
 	int board[4][4];
@@ -134,6 +132,17 @@ private:
 		Fori(4) score += moveLine(dir, i);
 		return score;
 	}
+	vector<Dir> getLegalMove() {
+		vector<Dir> vec;
+		Dir ret(UP);
+		for (Dir dir = UP; dir < DIR_NUM; ++dir) {
+			int temp[4][4]; memcpy(temp, board, sizeof(board));
+			move(dir);
+			if (!isSame(temp, board)) vec.push_back(dir);
+			memcpy(board, temp, sizeof(temp));
+		}
+		return vec;
+	}
 
 	int search(Dir dir, int cnt) {
 		int score(0);
@@ -144,7 +153,8 @@ private:
 			return score;
 		}
 
-		for (Dir nextDir = UP; nextDir < DIR_NUM; ++nextDir) {
+		vector<Dir> legalMove = getLegalMove();
+		for (const Dir& nextDir : legalMove) {
 			int temp[4][4]; memcpy(temp, board, sizeof(board));
 			score += search(nextDir, cnt - 1);
 			memcpy(board, temp, sizeof(temp));
@@ -152,23 +162,16 @@ private:
 		return score;
 	}
 
-	Dir findRandomMove() {
-		Dir ret(UP);
-		for (Dir dir = UP; dir < DIR_NUM; ++dir) {
-			int temp[4][4]; memcpy(temp, board, sizeof(board));
-			move(dir);
-			if (!isSame(temp, board)) ret = dir;
-			memcpy(board, temp, sizeof(temp));
-		}
-		return ret;
-	}
 	Dir findBestMove() {
-		// print();
-		Dir bestDir = findRandomMove();
+		//print();
+		vector<Dir> legalMove = getLegalMove();
+		Dir bestDir = legalMove[0];
 		int bestScore(0);
-		for (Dir dir = UP; dir < DIR_NUM; ++dir) {
+
+		for (const Dir& dir : legalMove) {
 			int temp[4][4]; memcpy(temp, board, sizeof(board));
 			int score = search(dir, depth);
+			//out dir_to_string[dir] spc search(dir, 0) << "\n";
 			if (bestScore < score) {
 				bestDir = dir;
 				bestScore = score;
@@ -199,6 +202,7 @@ public:
 			Dir moveDir = findBestMove();
 			move(moveDir);
 			out dir_to_string[moveDir] << endl;
+			//print();
 		}
 	}
 
@@ -208,7 +212,6 @@ public:
 			board[pos / 4][pos % 4] = 2;
 			for (Dir dir = UP; dir < DIR_NUM; ++dir)
 				out dir_to_string[dir] spc search(dir, 0) << "\n";
-			move(findRandomMove());
 			print();
 		}
 	}
