@@ -76,7 +76,8 @@ void init_weight(int value[10]) {
 class Game2048 {
 public:
 	int board[4][4];
-	inline bool isSafe(int x, int y) const { return (x >= 0 && x < 4 && y >= 0 && y < 4); }
+	bool isSafe(int x, int y) const { return (x >= 0 && x < 4 && y >= 0 && y < 4); }
+	void init() { Fori(4) Forj(4) board[i][j] = 0; }
 
 	MoveData moveLine(Dir dir, int idx) {
 		int dest;
@@ -251,16 +252,13 @@ public:
 		int temp[4][4]; memcpy(temp, board, sizeof(board));
 
 		move(bestDir);
-		if (isSame(temp, board)) out "ERROR!!!\n";
+		if (isSame(temp, board)) exit(0);
 
 		memcpy(board, temp, sizeof(temp));
 
 		return bestDir;
 	}
 
-	void init() { 
-		Fori(4) Forj(4) board[i][j] = 0; 
-	}
 	Game2048() { init(); }
 
 	void print() const {
@@ -288,10 +286,10 @@ public:
 	}
 
 	int selfTest() {
+		const Dir firstMove[2]{ UP, LEFT };
 		int emptySize(16), sum(0);
 		Fori(16) {
 			init();
-			Dir firstMove[2]{ UP, LEFT };
 			int moveCnt(0);
 			while (true) {
 				int pos = getCreatePos(); pos--;
@@ -303,6 +301,7 @@ public:
 			int score(0);
 			Fori(4) Forj(4) score = max(score, board[i][j]);
 			sum += score;
+			out "score : " << score << "\n";
 			// print();
 		}
 		// out "score :" spc(sum / 16) << "\n";
@@ -329,13 +328,13 @@ public:
 };
 
 void learning() {
-	int maxi_value[10]{ 40, 11, 3, 6, 5, 4, 4, 2, 1, 0 };
+	int maxi_value[10]{ 50, 30, 3, 6, 5, 4, 4, 2, 1, 0 };
 	int size = 50, maxiScore(0);
 	int idx(0), cnt(0);
 	while (true) {
 		if (cnt == 10) break;
 		int value[10]; memcpy(value, maxi_value, sizeof(maxi_value));
-		value[idx] += 10;
+		value[idx] += 100;
 		init_weight(value);
 		out "current value [";
 		Fori(10) {
@@ -374,10 +373,18 @@ void learning() {
 int main() {
 	Interactive;
 
-	
-	int value[10]{60, 11, 3, 6, 5, 4, 4, 2, 1, 0};
+	int value[10] {150, 30, 3, 6, 5, 4, 4, 2, 1, 0};
 	init_weight(value);
 	Game2048 game;
 	game.start();
 	
+	//learning();
+
+
+	/*
+	int value[10]{ 100, 30, 3, 6, 5, 4, 4, 2, 1, 0 };
+	init_weight(value);
+	Game2048 game;
+	out game.selfTest();
+	*/
 }
