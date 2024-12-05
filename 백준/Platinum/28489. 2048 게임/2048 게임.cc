@@ -25,61 +25,23 @@ using namespace std;
 enum Dir {
     UP, LEFT, DOWN, RIGHT, DIR_NUM, DIR_NULL
 };
-Dir& operator++(Dir& d) { d = (Dir)(d + 1); return d; }
+static Dir& operator++(Dir& d) { d = (Dir)(d + 1); return d; }
 string dir_to_string[4]{ "UP", "LEFT", "DOWN", "RIGHT" };
 
-int mono_weight;
-int monoMinus;
-int monoPlus;
-int board_weight[4][4];
-int count_weight;
-int maxi_weight;
-void init_weight(int value[12]) {
-    mono_weight = value[0];
-    monoMinus = value[1];
-    monoPlus = value[2];
-
-    board_weight[0][0] = value[3];
-
-    board_weight[1][0] = value[4];
-    board_weight[0][1] = value[4];
-
-    board_weight[2][0] = value[5];
-    board_weight[2][2] = value[5];
-    board_weight[0][2] = value[5];
-
-    board_weight[3][0] = value[6];
-    board_weight[2][1] = value[6];
-    board_weight[1][2] = value[6];
-    board_weight[0][3] = value[6];
-
-    board_weight[1][2] = value[7];
-    board_weight[2][2] = value[7];
-    board_weight[2][1] = value[7];
-
-    board_weight[2][3] = value[8];
-    board_weight[3][2] = value[8];
-
-    board_weight[3][3] = value[9];
-
-    count_weight = value[10];
-    maxi_weight = value[11];
-}
-
-struct MoveData {
-    int cnt = 0, maxi = 0;
-    Dir dir;
-    MoveData() : dir(DIR_NULL) {}
-    MoveData(Dir d) : dir(d) {}
-    void update(int n) { cnt++; maxi = max(maxi, n); }
-};
-bool MoveDataComp(const MoveData& a, const MoveData& b) {
-    if (a.maxi == b.maxi) return a.cnt > b.cnt;
-    else return a.maxi > b.maxi;
+int big_w;
+int empty_w;
+int monotonic_w;
+int smoothness_w;
+static void init_weight(int value[4]) {
+    big_w = value[0];
+    empty_w = value[1];
+    monotonic_w = value[2];
+    smoothness_w = value[3];
 }
 
 class Game2048 {
 public:
+    int MAX_depth = 2;
     int board[4][4];
     void print() const {
         out "┌───────────\n";
@@ -95,8 +57,7 @@ public:
 
     Game2048() { init(); }
 
-    MoveData move(Dir dir) {
-        MoveData moveData(dir);
+    void move(Dir dir) {
         int dest;
         for (int line = 0; line < 4; ++line) {
             if (dir == LEFT) {
@@ -107,7 +68,6 @@ public:
                     if (!board[line][dest]) board[line][dest] = board[line][i];
                     else {
                         if (board[line][dest] & board[line][i]) {
-                            moveData.update(board[line][dest]);
                             board[line][dest] <<= 1;
                             dest++;
                         }
@@ -128,7 +88,6 @@ public:
                     if (!board[line][dest]) board[line][dest] = board[line][i];
                     else {
                         if (board[line][dest] & board[line][i]) {
-                            moveData.update(board[line][dest]);
                             board[line][dest] <<= 1;
                             dest--;
                         }
@@ -149,7 +108,6 @@ public:
                     if (!board[dest][line]) board[dest][line] = board[i][line];
                     else {
                         if (board[dest][line] & board[i][line]) {
-                            moveData.update(board[dest][line]);
                             board[dest][line] <<= 1;
                             dest++;
                         }
@@ -170,7 +128,6 @@ public:
                     if (!board[dest][line]) board[dest][line] = board[i][line];
                     else {
                         if (board[dest][line] & board[i][line]) {
-                            moveData.update(board[dest][line]);
                             board[dest][line] <<= 1;
                             dest--;
                         }
@@ -184,9 +141,8 @@ public:
                 }
             }
         }
-        return moveData;
     }
-    bool isLegalMove(Dir dir) {
+    bool isLegalMove(Dir dir) const {
         if (dir == LEFT) {
             Fori(4) {
                 for (int j = 0; j < 3; ++j) {
@@ -221,78 +177,129 @@ public:
         }
         return false;
     }
-    vector<Dir> getLegalMoves() {
+    vector<Dir> getLegalMoves() const {
         vector<Dir> vec;
         for (Dir dir = UP; dir < DIR_NUM; ++dir)
             if (isLegalMove(dir)) vec.push_back(dir);
         return vec;
     }
 
-    int board_score() {
-        int score(0);
-        Fori(4) Forj(4) score += board[i][j] * board_weight[i][j];
-        return score;
+    int evaluation_big() {
+        int sum(0);
+        Fori(4) Forj(4) if (board[i][j]) sum += board[i][j] * board[i][j];
+        return sum;
     }
-    int BitDiff(int a, int b) {
+    int evaluation_empty() {
         int cnt(0);
-        while (a != b) {
-            cnt++; b <<= 1;
-        }
+        Fori(4) Forj(4) if (!board[i][j]) cnt++;
         return cnt;
     }
-    int monotonic_score() {
-        int score(0);
-        auto cal = [&](int i, int j, int x, int y) {
-            if (isSafe(x, y) && board[x][y]) {
-                if (board[i][j] < board[x][y]) score -= monoMinus;
-                else score += monoPlus - BitDiff(board[i][j], board[x][y]);
-            }
-            };
+    int evaluation_monotonic() {
+        int up(0), down(0), left(0), right(0); // decrease direction
+        Fori(4) {
+            for (int cur = 0; cur < 3; ++cur) {
+                if (board[i][cur]) {
+                    int next = cur + 1;
+                    while (next < 4) {
+                        if (board[i][next]) {
+                            if (board[i][cur] > board[i][next]) right++;
+                            else if (board[i][cur] < board[i][next]) left++;
+                            break;
+                        }
+                        ++next;
+                    }
+                }
 
-        Fori(4) Forj(4) {
-            if (!board[i][j]) continue;
-            cal(i, j, i + 1, j);
-            cal(i, j, i, j + 1);
+                if (board[cur][i]) {
+                    int next = cur + 1;
+                    while (next < 4) {
+                        if (board[next][i]) {
+                            if (board[cur][i] > board[next][i]) down++;
+                            else if (board[cur][i] < board[next][i]) up++;
+                            break;
+                        }
+                        ++next;
+                    }
+                }
+            }
         }
 
-        score *= mono_weight;
+        return max(up, down) + max(left, right);
+    }
+    int evaluation_smoothness() {
+        int temp[4][4]; memcpy(temp, board, sizeof(board));
+        Fori(4) Forj(4) if (temp[i][j]) temp[i][j] = log2(temp[i][j]);
+
+        int score(0), x, y;
+        Fori(4) Forj(4) {
+            x = i, y = j + 1;
+            if (isSafe(x, y)) score -= abs(temp[i][j] - temp[x][y]);
+
+            x = i + 1, y = j;
+            if (isSafe(x, y)) score -= abs(temp[i][j] - temp[x][y]);
+        }
 
         return score;
     }
-    int evaluation(MoveData moveData) {
+    int evaluation() {
         int score(0);
-        score += monotonic_score();
-        score += board_score();
-        score += moveData.cnt * count_weight;
-        score += (moveData.maxi == 0 ? 0 : log2(moveData.maxi)) * maxi_weight;
+        score += evaluation_big() * big_w;
+        score += evaluation_empty() * empty_w;
+        score += pow(evaluation_monotonic(), monotonic_w);
+        score += evaluation_smoothness() * smoothness_w;
         return score;
     }
-    int search(Dir dir) {
+    int add_block(int depth) {
+        int size(0); Fori(4) Forj(4) if (!board[i][j]) size++;
+
+        if (size == 0) return -2e9;
+        if (size >= 6 && depth >= 3) return evaluation();
+        if (depth >= MAX_depth) return evaluation();
+
+        int score_sum = 0;
+        Fori(4) Forj(4) {
+            if (!board[i][j]) {
+                int temp[4][4]; memcpy(temp, board, sizeof(board));
+
+                board[i][j] = 2;
+                score_sum += findBest(depth + 1).second;
+
+                memcpy(board, temp, sizeof(temp));
+            }
+        }
+
+        return (score_sum / size);
+    }
+    int search(Dir dir, int depth) {
         int temp[4][4]; memcpy(temp, board, sizeof(board));
 
-        MoveData moveData = move(dir);
-        int score = evaluation(moveData);
+        move(dir);
+        int score = add_block(depth + 1);
 
         memcpy(board, temp, sizeof(temp));
         return score;
     }
 
-    Dir findBestMove() {
+    pair<Dir, int> findBest(int depth = 0) {
+        pair<Dir, int> best{DIR_NULL, -2e9};
         vector<Dir> legalMoves = getLegalMoves();
-        if (legalMoves.size() == 0) return DIR_NULL;
-        else if (legalMoves.size() == 1) return legalMoves[0];
 
-        Dir bestMove = legalMoves[0];
-        int bestScore = search(legalMoves[0]);
+        if (legalMoves.size() == 0) return best;
+
+        best.first = legalMoves[0];
+        best.second = search(legalMoves[0], depth);
+
+        if (legalMoves.size() == 1) return best;
+
         for (int i = 1; i < legalMoves.size(); ++i) {
-            int nextScore = search(legalMoves[i]);
-            if (bestScore < nextScore) {
-                bestScore = nextScore;
-                bestMove = legalMoves[i];
+            int nextScore = search(legalMoves[i], depth);
+            if (best.second < nextScore) {
+                best.second = nextScore;
+                best.first = legalMoves[i];
             }
         }
 
-        return bestMove;
+        return best;
     }
 
     void start() {
@@ -301,7 +308,7 @@ public:
             if (pos == -2) break;
             board[pos / 4][pos % 4] = 2;
             //print();
-            Dir moveDir = findBestMove();
+            Dir moveDir = findBest().first;
             move(moveDir);
             out dir_to_string[moveDir] << endl;
             //print();
@@ -317,7 +324,7 @@ public:
                 if (pos == -2) break;
                 board[pos / 4][pos % 4] = 2;
                 //print();
-                Dir moveDir = findBestMove();
+                Dir moveDir = findBest().first;
                 move(moveDir);
                 //print();
             }
@@ -364,61 +371,68 @@ public:
 };
 
 void learning() {
-    int maxi_value[12]{ 35, 4, 1, 10, 5, 4, 3, 3, 2, 0, 1, 1 };
-    int size = 40, maxiScore(800);
-    int idx(0), cnt(0);
-    while (true) {
-        if (cnt == 12) break;
-        int value[12]; memcpy(value, maxi_value, sizeof(maxi_value));
-        value[idx] += 100;
-        init_weight(value);
-        out "current value [";
-        Fori(12) {
-            out value[i];
-            if (i != 11) out ", ";
-        }
-        out "]\n";
+    int maxi_value[4]{ 1, 100000, 10000, 3 };
+    int maxiScore(0);
+    auto print_maxiData = [&]() -> void {
         out "Maxi value    {";
-        Fori(12) {
+        Fori(4) {
             out maxi_value[i];
-            if (i != 11) out ", ";
+            if (i != 3) out ", ";
         }
         out "}\n";
         out "Maxi score : " << maxiScore << "\n";
+        };
+    print_maxiData();
+    int size = 1, weight = 1;
+    int idx(0), cnt(0);
+    while (true) {
+        cnt++;
+        Fork(2) {
+            int value[4]; memcpy(value, maxi_value, sizeof(maxi_value));
+            if (k == 0) value[idx] += weight;
+            else value[idx] -= weight;
+            init_weight(value);
 
-        int sum(0);
-        Fori(size) {
-            Game2048 game;
-            sum += game.selfTest();
+            out "index : " << idx << ", weight : " << (k == 0 ? weight : -weight) << "\n";
+            int sum(0);
+            Fori(size) {
+                Game2048 game;
+                sum += game.selfTest();
+            }
+            int score = (sum / size);
+
+            //out "\033[31m[score] : " << score << "\033[0m\n";
+
+            if (score > maxiScore) {
+                out "MAXI UPDATE !!\n";
+                memcpy(maxi_value, value, sizeof(value));
+                maxiScore = score;
+                print_maxiData();
+                cnt = 0;
+                weight = 1;
+                k = 0;
+            }
         }
-        int score = (sum / size);
-        out "\033[31m[score] : " << score << "\033[0m\n";
-
-        if (score > maxiScore) {
-            memcpy(maxi_value, value, sizeof(value));
-            maxiScore = score;
+        idx++; idx %= 12;
+        if (cnt == 12) {
+            weight++;
             cnt = 0;
-        }
-        else {
-            idx++; idx %= 12;
-            cnt++;
         }
     }
 }
 
+int value[4]{ 1, 100000, 3, 10000 };
 int main() {
     Interactive;
 
-    
-    int value[12]{ 35, 4, 1, 10, 5, 4, 3, 3, 2, 0, 1, 1 };
+
     init_weight(value);
     Game2048 game;
     game.start();
-    
 
+    //learning();
 
     //Fori(100) {
-    //    int value[12]{ 1, 1, 1, 6, 5, 4, 3, 2, 1, 0, 1, 1 };
     //    init_weight(value);
     //    Game2048 game;
     //    out game.selfTest() << "\n";
