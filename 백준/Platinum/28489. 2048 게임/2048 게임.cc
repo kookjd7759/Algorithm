@@ -41,7 +41,7 @@ static void init_weight(int value[4]) {
 
 class Game2048 {
 public:
-    int MAX_depth = 5;
+    int MAX_depth = 6;
     int board[4][4];
     void print() const {
         out "┌───────────\n";
