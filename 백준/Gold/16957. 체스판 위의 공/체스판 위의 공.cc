@@ -22,30 +22,22 @@
 
 using namespace std;
 
-enum Dir {
-    L, LU, U, RU, R, RD, D, LD, DIR_NUM, END
-};
+enum Dir {  L, LU, U, RU, R, RD, D, LD, DIR_NUM, END };
 Dir& operator++(Dir& d) {
     d = (Dir)(d + 1);
     return d;
 }
 constexpr Dir opposite[8]{R, RD, D, LD, L, LU, U, RU};
-string dir_st[10]{ "L", "LU", "U", "RU", "R", "RD", "D", "LD", "NUM", "END"};
-constexpr int dir8[8][2]{
-    {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}
-};
+constexpr int dir8[8][2]{ {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1} };
 
 int** board_ori;
 Dir** board_dir;
-int** board_ret;
 int r, c;
 
 void init() {
     in r >> c;
     board_ori = new int* [r];  Fori(r) board_ori[i] = new int[c];
     board_dir = new Dir * [r]; Fori(r) board_dir[i] = new Dir[c];
-    board_ret = new int* [r]; Fori(r) board_ret[i] = new int[c];
-    Fori(r) Forj(c) board_ret[i][j] = 1;
     
     Fori(r) Forj(c) in board_ori[i][j];
 }
@@ -76,14 +68,15 @@ int main() {
     for (pair<int, int> target : endPos) {
         stack<pair<int, int>> st;
         st.push(target);
+        board_ori[target.first][target.second] = 1;
         while (!st.empty()) {
             pair<int, int> pos = st.top(); st.pop();
             for (Dir dir = L; dir < DIR_NUM; ++dir) {
                 int x = pos.first + dir8[dir][0], y = pos.second + dir8[dir][1];
-                if (isSafe(x, y) && board_ret[x][y] != 0 &&
+                if (isSafe(x, y) && board_ori[x][y] != -1 &&
                     board_dir[x][y] == opposite[dir]) {
-                    board_ret[x][y] = 0;
-                    board_ret[target.first][target.second]++;
+                    board_ori[x][y] = -1;
+                    board_ori[target.first][target.second]++;
                     st.push(make_pair(x, y));
                 }
             }
@@ -91,7 +84,7 @@ int main() {
     }
 
     Fori(r) {
-        Forj(c) out board_ret[i][j] << ' ';
+        Forj(c) out(board_ori[i][j] == -1 ? 0 : board_ori[i][j]) << ' ';
         ent;
     }
 }
