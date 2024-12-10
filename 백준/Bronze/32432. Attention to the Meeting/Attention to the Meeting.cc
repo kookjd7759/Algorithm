@@ -23,6 +23,5 @@ int main() {
     Sync;
 
     int n, k; in n >> k;
-    k -= (n - 1);
-    out k / n;
+    out(k - (n - 1)) / n;
 }
