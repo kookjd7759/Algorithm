@@ -79,14 +79,6 @@ void update(ll* tree, ll* lazy, int start, int end, int node, int left, int righ
     update(tree, lazy, mid + 1, end, node * 2 + 1, left, right, add);
 }
 
-void pirntTree(ll* tree, ll* lazy, int start, int end, int node) {
-    out "Tree (" << start << " ~ " << end << ")  " << tree[node] << ", " << lazy[node] << "\n";
-    if (start == end) return;
-    int mid = (start + end) / 2;
-    pirntTree(tree, lazy, start, mid, node * 2);
-    pirntTree(tree, lazy, mid + 1, end, node * 2 + 1);
-}
-
 int main() {
     Sync;
 
@@ -94,14 +86,12 @@ int main() {
     ll* ori = new ll[N + 1]; For1i(N) in ori[i];
     ll* tree = new ll[N * 4], *lazy = new ll[N * 4];
     init(ori, tree, lazy, 1, N, 1);
-    //pirntTree(tree, lazy, 1, N, 1);
     int size = M + K;
     while (size--) {
         int v; in v;
         if (v == 1) {
             ll a, b, c; in a >> b >> c;
             update(tree, lazy, 1, N, 1, a, b, c);
-            //pirntTree(tree, lazy, 1, N, 1);
         }
         else {
             int a, b; in a >> b;
