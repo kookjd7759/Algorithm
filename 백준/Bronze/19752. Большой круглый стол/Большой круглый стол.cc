@@ -22,31 +22,5 @@ int main() {
     Sync;
 
     int n, k; in n >> k;
-    int maxi;
-    if (n & 1) {
-        cout << min(n, k + 1);
-    }
-    else {
-        cout << min(n / 2, k + 1);
-    }
+    cout << ((n & 1) ? min(n, k + 1) : min(n / 2, k + 1));
 }
-/*
-* 5
-* 5 5
-* 4 5
-* 3 4
-* 2 3
-* 1 2
-* 
-* 4
-* 6 2
-* 5 2
-* 4 2
-* 3 2
-* 2 2
-* 1 2
-* 
-* 6
-* 
-* 
-*/
