@@ -24,7 +24,7 @@ int main() {
     int t; in t;
 	while (t--) {
 		int a, b, c, d; in a >> b >> c >> d;
-		if ((a & b & c & d) || ((~a & 7) & (~b & 7) & (~c & 7) & (~d & 7)))
+		if ((a & b & c & d) || (~a & ~b & ~c & ~d & 7))
 			cout << "YES";
 		else cout << "NO";
 		cout << "\n";
