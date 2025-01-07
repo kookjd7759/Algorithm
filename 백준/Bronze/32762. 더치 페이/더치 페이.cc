@@ -22,10 +22,8 @@ int main() {
     Sync;
     Fixed(4);
 
-    int n, m; in n >> m;
-    pair<int, int>* arr = new pair<int, int>[n];
-    int* ret = new int[n]; memset(ret, 0, sizeof(int) * n);
-    Fori(n) in arr[i].first >> arr[i].second;
+    int n, m, a; in n >> m;
+    Fori(n * 2) in a;
     double sum(0.0);
     Fori(m) {
         int x; double p; in x >> p;
