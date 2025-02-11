@@ -22,9 +22,6 @@ int main() {
     Sync;
 
     int a, b, n; in a >> b >> n;
-    Fori(n) {
-        a %= b;
-        a *= 10;
-    }
+    Fori(n) a %= b,  a *= 10;
     out a / b;
 }
