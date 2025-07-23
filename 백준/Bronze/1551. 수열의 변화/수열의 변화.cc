@@ -18,8 +18,6 @@
 
 using namespace std;
 
-int arr[1005][1005]; 
-
 int main() {
     Sync;
 
