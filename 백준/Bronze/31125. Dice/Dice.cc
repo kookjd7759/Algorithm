@@ -22,15 +22,12 @@ int main() {
     Sync;
 
     int tc; in tc;
-
     while (tc--) {
         int S, n, f, m; in S >> n >> f >> m;
 
         int l = n * 1 + m;
         int r = n * f + m;
 
-        if (l <= S && S <= r) out "YES";
-        else out "NO";
-        ent;
+        out (l <= S && S <= r ? "YES" : "NO") endl;
     }
 }
