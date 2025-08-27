@@ -1,84 +1,124 @@
 #include <bits/stdc++.h>
-
-#define Sync ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr)
-#define Fixed(x) cout << fixed; cout.precision(x)
-#define Interactive cin.tie(0)->sync_with_stdio(0)
-#define ll long long
-#define spc << " " <<
-#define endl << "\n"
-#define ent cout << "\n"
-#define out cout << 
-#define in cin >> 
-#define Fori(x) for (int i = 0; i < x; ++i)
-#define Forj(x) for (int j = 0; j < x; ++j)
-#define Fork(x) for (int k = 0; k < x; ++k)
-#define For1i(x) for (int i = 1; i <= x; ++i)
-#define For1j(x) for (int j = 1; j <= x; ++j)
-#define For1k(x) for (int k = 1; k <= x; ++k)
-
 using namespace std;
 
-int moves[8][2] = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
-int N;
+#define in  cin >>
+#define out cout <<
+#define spc << " " <<
+#define endl << "\n"
 
-bool check(int x, int y) { return (0 <= x && x < N && 0 <= y && y < N); }
-double centerScore(int x, int y) {
-    double n = (N - 1) / 2.0;
-    return fabs(x - n) + fabs(y - n);
+static const int MOV[8][2] = {
+    { 2,  1}, { 2, -1}, {-2,  1}, {-2, -1},
+    { 1,  2}, { 1, -2}, {-1,  2}, {-1, -2}
+};
+
+int N;
+vector<vector<char>> vis;
+vector<vector<int>> deg;
+
+inline bool inb(int x, int y) { return 0 <= x && x < N && 0 <= y && y < N; }
+
+void init_degree() {
+    deg.assign(N, vector<int>(N, 0));
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            int d = 0;
+            for (auto& m : MOV) {
+                int ni = i + m[0], nj = j + m[1];
+                if (inb(ni, nj)) ++d;
+            }
+            deg[i][j] = d;
+        }
+    }
+}
+
+inline void apply_visit(int x, int y) {
+    vis[x][y] = 1;
+    for (auto& m : MOV) {
+        int nx = x + m[0], ny = y + m[1];
+        if (inb(nx, ny) && !vis[nx][ny] && deg[nx][ny] > 0) deg[nx][ny]--;
+    }
+    deg[x][y] = 0;
+}
+
+inline double centerScore(int i, int j) {
+    double c = (N - 1) / 2.0;
+    return fabs(i - c) + fabs(j - c);
+}
+inline int edgePenalty(int i, int j) {
+    int dTop = i, dLeft = j, dBottom = N - 1 - i, dRight = N - 1 - j;
+    int dmin = min(min(dTop, dBottom), min(dLeft, dRight));
+    return (dmin == 0 ? 2 : (dmin == 1 ? 1 : 0));
+}
+inline int minNextDeg(int i, int j) {
+    int mn = 9;
+    for (auto& m : MOV) {
+        int ni = i + m[0], nj = j + m[1];
+        if (inb(ni, nj) && !vis[ni][nj]) mn = min(mn, deg[ni][nj]);
+    }
+    return (mn == 9 ? 9 : mn);
 }
 
 int main() {
-    Sync;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    int x, y; in N >> x >> y; --x, --y;
-
-    vector<vector<bool>> visit(N, vector<bool>(N, false));
-    vector<vector<int>> degree(N, vector<int>(N, 0));
-
-    Fori(N) Forj(N){
-        int d = 0;
-        for (auto& move : moves) if (check(i + move[0], j + move[1])) ++d;
-        degree[i][j] = d;
+    int sx, sy;
+    in N;
+    in sx >> sy; // 1-index 입력
+    int x = sx - 1, y = sy - 1; // 0-index
+    if (!inb(x, y)) {
+        out "-1 -1\n"; return 0;
     }
 
-    vector<pair<int, int>> path; path.reserve(N * N);
-    for (int step = 0; step < N * N; ++step) {
-        path.emplace_back(x, y);
-        visit[x][y] = true;
+    vis.assign(N, vector<char>(N, 0));
+    init_degree();
 
-        if (step == N * N - 1) break;
+    vector<pair<int, int>> path;
+    path.reserve(N * N);
 
-        for (auto& move : moves) {
-            int nx = x + move[0], ny = y + move[1];
-            if (check(nx, ny) && !visit[nx][ny] && degree[nx][ny] > 0) degree[nx][ny]--;
-        }
-        degree[x][y] = 0;
+    apply_visit(x, y);
+    path.emplace_back(x, y);
 
+    for (int step = 1; step < N * N; ++step) {
         vector<pair<int, int>> cand; cand.reserve(8);
-        for (auto& move : moves) {
-            int nx = x + move[0], ny = y + move[1];
-            if (check(nx, ny) && !visit[nx][ny]) cand.emplace_back(nx, ny);
+        for (auto& m : MOV) {
+            int nx = x + m[0], ny = y + m[1];
+            if (inb(nx, ny) && !vis[nx][ny]) cand.emplace_back(nx, ny);
         }
-
         if (cand.empty()) {
             out "-1 -1\n";
             return 0;
         }
 
-        sort(cand.begin(), cand.end(), [&](const pair<int, int>& a, const pair<int, int>& b) {
-            int da = degree[a.first][a.second];
-            int db = degree[b.first][b.second];
-            if (da != db) return da < db;
-            double ca = centerScore(a.first, a.second);
-            double cb = centerScore(b.first, b.second);
-            if (ca != cb) return ca < cb;
-            if (a.first != b.first) return a.first < b.first;
-            return a.second < b.second;
+        sort(cand.begin(), cand.end(),
+            [&](const pair<int, int>& A, const pair<int, int>& B) {
+                int dA = deg[A.first][A.second];
+                int dB = deg[B.first][B.second];
+                if (dA != dB) return dA < dB;
+
+                int nA = minNextDeg(A.first, A.second);
+                int nB = minNextDeg(B.first, B.second);
+                if (nA != nB) return nA < nB;
+
+                int eA = edgePenalty(A.first, A.second);
+                int eB = edgePenalty(B.first, B.second);
+                if (eA != eB) return eA < eB;
+
+                double cA = centerScore(A.first, A.second);
+                double cB = centerScore(B.first, B.second);
+                if (cA != cB) return cA < cB;
+
+                if (A.first != B.first) return A.first < B.first;
+                return A.second < B.second;
             });
 
-        x = cand[0].first;
-        y = cand[0].second;
+        x = cand[0].first; y = cand[0].second;
+        apply_visit(x, y);
+        path.emplace_back(x, y);
     }
 
-    for (auto& p : path) out(p.first + 1) spc(p.second + 1) endl;
+    for (auto& p : path) {
+        out(p.first + 1) spc(p.second + 1) endl;
+    }
+    return 0;
 }
