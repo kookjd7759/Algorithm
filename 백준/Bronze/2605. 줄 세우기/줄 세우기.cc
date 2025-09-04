@@ -1,21 +1,21 @@
-#include <iostream>
-#include <vector>
-
-#define Sync ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
-#define Spc << " " <<
-#define Endl << "\n"
-
-using namespace std;
+#include<stdio.h>
+int a[1000];
+int b[1000];
 int main() {
-	Sync;
-
-	int n; cin >> n;
-	vector<int> arr(n);
-
-	for (int i = 1; i <= n; i++) {
-		int a; cin >> a;
-		arr.insert(arr.begin() + a, i);
+	int c, d;
+	scanf("%d", &c);
+	for (int i = 0; i < c; i++) {
+		scanf("%d", &a[i]);
 	}
-
-	for (int i = n - 1; i >= 0; i--) cout << arr[i] << ' ';
+	for (int i = 1; i <= c; i++) {
+		d = i;
+		for (int j = 0; j < a[i]; j++) {
+			b[d] = b[d - 1];
+			d--;
+		}
+		b[d] = i;
+	}
+	for (int i = 0; i < c; i++) {
+		printf("%d ", b[i] + 1);
+	}
 }
