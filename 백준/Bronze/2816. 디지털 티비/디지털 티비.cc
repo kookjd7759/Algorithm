@@ -29,15 +29,13 @@ int main() {
         else if (arr[i] == "KBS2") kbs2 = i;
     }
 
+    Fori(kbs1) out '1';
+    Fori(kbs1) out '4';
     if (kbs1 < kbs2) {
-        Fori(kbs1) out '1';
-        Fori(kbs1) out '4';
         Fori(kbs2) out '1';
         Fori(kbs2 - 1) out '4';
     }
     else {
-        Fori(kbs1) out '1';
-        Fori(kbs1) out '4';
         Fori(kbs2 + 1) out '1';
         Fori(kbs2) out '4';
     }
