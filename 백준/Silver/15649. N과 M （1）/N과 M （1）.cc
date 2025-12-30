@@ -1,43 +1,36 @@
 #include <iostream>
-#include <array>
+#include <cstring>
+
+#define Sync ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr)
 
 using namespace std;
 
 int N, M;
+int arr[10];
+bool visited[10];
 
-void PrintArr(const array<int, 8>& Arr) {
-    for (int i = 0; i < M; i++)
-        cout << Arr.at(i) << " ";
-    cout << "\n";
-}
-
-bool Comp(array<int, 8> Arr, int index) {
-    for (int i = 0; i < index; i++) {
-        if (Arr.at(i) == Arr.at(index))
-            return false;
-    }
-
-    return true;
-}
-
-void Func(array<int, 8>& Arr, int index) {
-    if (index == M) {
-        PrintArr(Arr);
-        return;
-    }
-
-    for (int i = 0; i < N; i++) {
-        Arr.at(index) = i + 1;
-        if (Comp(Arr, index)) 
-            Func(Arr, index + 1);
-    }
+void dfs(int depth) {
+	if (depth == M) {
+		for (int i = 0; i < M; ++i)
+			cout << arr[i] << ' ';
+		cout << "\n";
+		return;
+	}
+	for (int i = 1; i <= N; ++i) {
+		if (visited[i]) continue;
+		visited[i] = true;
+		arr[depth] = i;
+		dfs(depth + 1);
+		visited[i] = false;
+	}
 }
 
 int main() {
-    cin >> N >> M;
-    array<int, 8> Arr{};
+	Sync;
 
-    Func(Arr, 0);
+	memset(visited, false, sizeof(visited));
+	cin >> N >> M;
+	dfs(0);
 
-    return 0;
+	return 0;
 }
