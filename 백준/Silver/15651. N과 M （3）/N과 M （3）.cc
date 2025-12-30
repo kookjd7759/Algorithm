@@ -1,33 +1,30 @@
 #include <iostream>
-#include <array>
+
+#define Sync ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr)
 
 using namespace std;
 
 int N, M;
+int arr[10];
 
-void PrintArr(const array<int, 8>& Arr) {
-    for (int i = 0; i < M; i++)
-        cout << Arr.at(i) << " ";
-    cout << "\n";
-}
-
-void Func(array<int, 8>& Arr, int index) {
-    if (index == M) {
-        PrintArr(Arr);
-        return;
-    }
-
-    for (int i = 0; i < N; i++) {
-        Arr.at(index) = i + 1;
-        Func(Arr, index + 1);
-    }
+void dfs(int depth) {
+	if (depth == M) {
+		for (int i = 0; i < M; ++i)
+			cout << arr[i] << ' ';
+		cout << "\n";
+		return;
+	}
+	for (int i = 1; i <= N; ++i) {
+		arr[depth] = i;
+		dfs(depth + 1);
+	}
 }
 
 int main() {
-    cin >> N >> M;
-    array<int, 8> Arr{};
+	Sync;
 
-    Func(Arr, 0);
+	cin >> N >> M;
+	dfs(0);
 
-    return 0;
+	return 0;
 }
