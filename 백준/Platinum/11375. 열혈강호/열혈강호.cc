@@ -10,12 +10,13 @@ using namespace std;
 int N, M; 
 vector<vector<int>> workers;
 vector<int> assigned;
+vector<bool> visited;
 
 void input() {
     cin >> N >> M;
     workers.resize(N + 1);
     assigned.assign(M + 1, 0);
-    assigned.assign(M + 1, 0);
+    visited.assign(N + 1, false);
     for (int i = 1; i <= N; ++i) {
         int len; cin >> len;
         workers[i].resize(len);
@@ -24,22 +25,18 @@ void input() {
     }
 }
 
-bool request_change(int worker, int target, vector<bool>& visited) {
+bool request_change(int worker) {
     visited[worker] = true;
     for (int j = 0; j < workers[worker].size(); ++j) {
         int work = workers[worker][j];
-        if (work == target) continue;
-
         if (!assigned[work]) {
-            assigned[target] = 0;
             assigned[work] = worker;
             return true;
         }
 
         int other = assigned[work];
         if (visited[other]) continue;
-        if (request_change(other, work, visited)) {
-            assigned[target] = 0;
+        if (request_change(other)) {
             assigned[work] = worker;
             return true;
         }
@@ -56,9 +53,9 @@ void solve() {
                 break;
             }
             
-            vector<bool> visited(N + 1, false);
+            visited.assign(N + 1, false);
             int other = assigned[work];
-            if (request_change(other, work, visited)) {
+            if (request_change(other)) {
                 assigned[work] = worker;
                 break;
             }
