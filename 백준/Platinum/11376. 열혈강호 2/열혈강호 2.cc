@@ -10,7 +10,7 @@ using namespace std;
 int N, M;
 vector<vector<int>> canDo;
 vector<int> assigned;
-vector<bool> visited;
+vector<int> visited;
 
 void input() {
     cin >> N >> M;
@@ -21,15 +21,15 @@ void input() {
         for (int j = 0; j < len; ++j) cin >> canDo[i][j];
     }
     assigned.assign(M + 1, 0);
-    visited.assign(N + 1, false);
+    visited.assign(N + 1, 0);
 }
 
-bool dfs(int worker) {
-    if (visited[worker]) return false;
-    visited[worker] = true;
+bool dfs(int worker, int stamp) {
+    if (visited[worker] == stamp) return false;
+    visited[worker] = stamp;
 
     for (const int& work : canDo[worker]) {
-        if (!assigned[work] || dfs(assigned[work])) {
+        if (!assigned[work] || dfs(assigned[work], stamp)) {
             assigned[work] = worker;
             return true;
         }
@@ -41,7 +41,7 @@ int solve() {
     int ans = 0;
     for (int worker = 1; worker <= N; ++worker) {
         fill(visited.begin(), visited.end(), false);
-        if (dfs(worker)) ans++;
+        if (dfs(worker, worker)) ans++;
     }
     return ans;
 }
