@@ -29,9 +29,10 @@ struct HArc {
 vector<HArc> hArcs; int hArc_size;
 vector<vector<int>> child;
 vector<int> sub;
+
 vector<priority_queue<HArc>> que; int que_size;
-vector<int> que_id;
 vector<vector<HArc>> con;
+vector<int> que_id;
 
 int SIZE;
 vector<ll> weight, DP;
@@ -105,38 +106,34 @@ void init() {
     make_hArc_tree();
 }
 
-
-
-ll get_mn_mul(int node) {
+ll get_min_mul(int node) {
     if (node == 1) return weight[1] * weight[2] + weight[1] * weight[SIZE];
+
     HArc& cur = hArcs[node];
-    if (cur.u == cur.low) {
-        if (con[cur.u].empty() || !cur.isContain(con[cur.u].back()))
-            return weight[cur.u] * weight[cur.u + 1];
-        else
-            return con[cur.u].back().mul;
-    }
-    else {
-        if (con[cur.v].empty() || !cur.isContain(con[cur.v].back()))
-            return weight[cur.v] * weight[cur.v - 1];
-        else
-            return con[cur.v].back().mul;
-    }
+    if (cur.u == cur.low) 
+        return (con[cur.u].empty() || !cur.isContain(con[cur.u].back())) ? 
+            weight[cur.u] * weight[cur.u + 1] : 
+            con[cur.u].back().mul;
+    else
+        return  (con[cur.v].empty() || !cur.isContain(con[cur.v].back())) ?
+            weight[cur.v] * weight[cur.v - 1] : 
+            con[cur.v].back().mul;
 }
 
-void merge_pq(int node) {
-    int max_child = -1;
-    for (auto& it : child[node])
-        if (max_child == -1 || sub[max_child] < sub[it])
-            max_child = it;
-    que_id[node] = que_id[max_child];
-    auto& cur_pq = que[que_id[node]];
-    for (auto& it : child[node]) {
-        if (it == max_child) continue;
-        auto& child_pq = que[que_id[it]];
-        while (!child_pq.empty()) {
-            cur_pq.push(child_pq.top());
-            child_pq.pop();
+void merge_que(int node) {
+    int maxi = -1;
+    for (const int& n : child[node]) if (maxi == -1 || sub[maxi] < sub[n])
+        maxi = n;
+
+    que_id[node] = que_id[maxi];
+    priority_queue<HArc>& current_que = que[que_id[node]];
+    for (const int& n : child[node]) {
+        if (n == maxi) continue;
+
+        priority_queue<HArc>& child_que = que[que_id[n]];
+        while (!child_que.empty()) {
+            current_que.push(child_que.top());
+            child_que.pop();
         }
     }
 }
@@ -147,31 +144,33 @@ void dfs(int node = 1) {
     if (child[node].empty()) {
         que_id[node] = ++que_size;
         cur.den = cur.base;
-        cur.num = weight[cur.low] * (cur.den + cur.mul - get_mn_mul(node));
+        cur.num = weight[cur.low] * (cur.den + cur.mul - get_min_mul(node));
         add_arc(node, cur);
         return;
     }
+
     cur.den = cur.base;
-    for (auto& it : child[node]) {
-        dfs(it);
-        sub[node] += sub[it];
-        cur.den -= hArcs[it].base;
+    for (const int& n : child[node]) {
+        dfs(n);
+        sub[node] += sub[n];
+        cur.den -= hArcs[n].base;
     }
-    cur.num = weight[cur.low] * (cur.den + cur.mul - get_mn_mul(node));
-    merge_pq(node);
-    auto& cur_pq = que[que_id[node]];
-    while (!cur_pq.empty() && cur_pq.top().get_support() >= weight[cur.low]) {
-        auto hm = cur_pq.top();
-        cur.den += hm.den;
+
+    cur.num = weight[cur.low] * (cur.den + cur.mul - get_min_mul(node));
+    merge_que(node);
+    priority_queue<HArc>& current_que = que[que_id[node]];
+    while (!current_que.empty() && current_que.top().get_support() >= weight[cur.low]) {
+        cur.den += current_que.top().den;
         remove_arc(node);
-        cur.num = weight[cur.low] * (cur.den + cur.mul - get_mn_mul(node));
+        cur.num = weight[cur.low] * (cur.den + cur.mul - get_min_mul(node));
     }
-    while (!cur_pq.empty() && cur <= cur_pq.top()) {
-        auto hm = cur_pq.top();
-        cur.den += hm.den;
+
+    while (!current_que.empty() && cur <= current_que.top()) {
+        cur.den += current_que.top().den;
+        cur.num += current_que.top().num;
         remove_arc(node);
-        cur.num += hm.num;
     }
+
     add_arc(node, cur);
 }
 
