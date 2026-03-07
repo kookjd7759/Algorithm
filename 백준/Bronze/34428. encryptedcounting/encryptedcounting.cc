@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+
+#define Sync ios_base::sync_with_stdio(false);cin.tie(nullptr);cout.tie(nullptr)
+#define Fixed(x) cout << fixed; cout.precision(x)
+#define Interactive cin.tie(0)->sync_with_stdio(0)
+#define ll long long
+#define spc << " " <<
+#define endl << "\n"
+#define ent cout << "\n"
+#define out cout <<
+#define in cin >> 
+#define Fori(x) for (int i = 0; i < x; ++i)
+#define Forj(x) for (int j = 0; j < x; ++j)
+#define Fork(x) for (int k = 0; k < x; ++k)
+#define For1i(x) for (int i = 1; i <= x; ++i)
+#define For1j(x) for (int j = 1; j <= x; ++j)
+#define For1k(x) for (int k = 1; k <= x; ++k)
+
+using namespace std;
+
+string NextSeq(const string& s) {
+    string r = "";
+    for(int i = 0; i < (int)s.size();) {
+        int j = i;
+        while(j < (int)s.size() && s[i] == s[j]) ++j;
+        r += to_string(j - i);
+        r += s[i];
+        i = j;
+    }
+    return r;
+}
+
+int main() {
+    Sync;
+
+    string s, c; in s >> c;
+
+    int m = 0;
+    while(true) {
+        if(s == c) {
+            out m endl;
+            return 0;
+        }
+        s = NextSeq(s);
+        ++m;
+    }
+
+    return 0;
+}
