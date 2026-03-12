@@ -34,50 +34,41 @@ int main() {
     Sync;
 
     int N; string s; in N >> s;
-    int L = s.size();
-    vector<vector<int>> nxt(L + 1, vector<int>(3, -1)), last(1, vector<int>(3, -1));
-    vector<int> cur(3, -1);
+    int L = (int)s.size();
+    vector<vector<int>> nxt(L + 1, vector<int>(3, -1));
+    vector<int> last(3, -1);
 
-    for (int i = L - 1; i >= 0; --i) {
-        cur[Id(s[i])] = i;
-        Forj(3) nxt[i + 1][j] = cur[j];
-    }
-    cur = vector<int>(3, -1);
-    Fori(L) if (cur[Id(s[i])] == -1) cur[Id(s[i])] = i;
-    Forj(3) nxt[0][j] = cur[j];
-
-    vector<vector<int>> dp(N + 1, vector<int>(L, -1));
-    vector<vector<int>> prePos(N + 1, vector<int>(L, -1));
-    vector<vector<char>> preCmd(N + 1, vector<char>(L, 0));
-
-    Forj(3) {
-        int np = nxt[0][j];
-        if (np != -1) dp[1][np] = np, prePos[1][np] = -1, preCmd[1][np] = Ch(j);
+    for (int i = L; i >= 0; --i) {
+        if (i < L) last[Id(s[i])] = i + 1;
+        Forj(3) nxt[i][j] = last[j];
     }
 
-    for (int step = 1; step < N; ++step) {
-        Fori(L) if (dp[step][i] != -1) {
+    vector<vector<int>> dp(N + 1, vector<int>(L + 1, -1));
+    vector<vector<int>> pick(N + 1, vector<int>(L + 1, -1));
+
+    Fori(L + 1) dp[0][i] = i;
+
+    For1i(N) {
+        for (int pos = L; pos >= 0; --pos) {
             Forj(3) {
-                int np = (i + 1 <= L ? nxt[i + 1][j] : -1);
+                int np = nxt[pos][j];
                 if (np == -1) continue;
-                if (dp[step + 1][np] < np) {
-                    dp[step + 1][np] = np;
-                    prePos[step + 1][np] = i;
-                    preCmd[step + 1][np] = Ch(j);
+                if (dp[i][pos] < dp[i - 1][np]) {
+                    dp[i][pos] = dp[i - 1][np];
+                    pick[i][pos] = j;
                 }
             }
         }
     }
 
-    int pos = -1;
-    for (int i = L - 1; i >= 0; --i) if (dp[N][i] != -1) { pos = i; break; }
-
     string ans;
-    for (int step = N; step >= 1; --step) {
-        ans += preCmd[step][pos];
-        pos = prePos[step][pos];
+    int pos = 0;
+    for (int rem = N; rem >= 1; --rem) {
+        int c = pick[rem][pos];
+        ans += Ch(c);
+        pos = nxt[pos][c];
     }
-    reverse(ans.begin(), ans.end());
+
     out ans << "\n";
 
     return 0;
